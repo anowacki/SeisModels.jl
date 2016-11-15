@@ -180,3 +180,86 @@ for sym in model_variables_EarthModel1D
         (m.$sym[ir]*(r1 - r) + m.$sym[ir+1]*(r - r0))/(r1 - r0)
     end
 end
+
+
+## Derived quantities
+"""
+    mass(m::EarthModel1D, r) -> mass
+
+Return the mass in kg between the centre of the model and the radius `r` km.
+"""
+function mass(m::PREMPolyModel, r)
+	l = findlayer(m, r)
+	r *= 1.e3 # SI
+	M = 0.
+	for i = 1:l
+		if i == 1
+			R0 = 0.
+		else
+			R0 = m.r[i-1]*1.e3
+		end
+		if i < l
+			R = m.r[i]*1.e3
+		else
+			R = r
+		end
+        for k in 1:size(m.rho, 1)
+            rho = m.rho[k,i]/m.a^(k-1)*1.e3^(2-k)/(k+2)
+            M += rho*(R^(k+2) - R0^(k+2))
+        end
+	end
+	4*π*M
+end
+
+function mass(m::SteppedLayeredModel, r)
+    l = findlayer(m, r)
+    r *= 1.e3
+    M = 0.
+    for i in 1:l
+        R0 = i == 1 ? 0. : m.r[i-1]*1.e3
+        R = i < l ? m.r[i]*1.e3 : r
+        M += m.rho[i]*(R^3 - R0^3)
+    end
+    4/3*π*M
+end
+
+function mass(m::LinearLayeredModel, r)
+    l = findlayer(m, r)
+    r *= 1.e3
+    M = 0.
+    for i in 1:l
+        m.r[i] == m.r[i+1] && continue
+        R0 = m.r[i]*1.e3
+        R = i == l ? r : m.r[i+1]*1.e3
+        dρ_dr = 1.e3*(m.rho[i+1] - m.rho[i])/(m.r[i+1]*1.e3 - R0)
+        ρ0 = 1.e3*m.rho[i] - dρ_dr*R0
+        M += ρ0*(R^3 - R0^3)/3 + dρ_dr*(R^4 - R0^4)/4
+    end
+    4*π*M
+end
+
+"""
+    surface_mass(m::EarthModel1D, r) -> mass
+
+Return the mass in kg betwen radius `r` km and the surface.
+"""
+surface_mass(m::EarthModel1D, r) = mass(m.a) - mass(r)
+
+const NewtonG = 6.67428e-11
+"""
+    g(m::EarthModel1D, r) -> g
+
+Return the acceleration due to gravity, `g`, in m/s^2 at radius `r` km.
+"""
+g(m::EarthModel1D, r) = (r == 0) ? 0. : NewtonG*mass(m, r)/(r*1.e3)^2
+
+"""
+    pressure(m::EarthModel1D, r) -> p
+
+Return the pressure `p` in Pa at radius `r` km.
+"""
+function pressure(m::EarthModel1D, r)
+    f(r) = pressure_integration_func(m, r)
+    1.e3*quadgk(f, r, m.a)[1]
+end
+pressure_integration_func(m::EarthModel1D, r) = 1.e3*rho(m, r)*g(m, r)

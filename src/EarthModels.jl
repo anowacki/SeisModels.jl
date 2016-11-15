@@ -9,8 +9,8 @@ export
     LinearLayeredModel,
     PREMPolyModel,
     SteppedLayeredModel,
-    
-    # Evluation functions
+
+    # Evaluation functions
     vp,
     vs,
     rho,
@@ -21,19 +21,23 @@ export
     eta,
     Qμ, Qmu,
     Qκ, Qkappa,
-    
+
+    # Derived properties
+    g,
+    mass,
+    pressure,
+    surface_mass,
+
     # Models
     AK135,
     PREM
 
-
+# Type of which all others are subtypes
 abstract EarthModel
 
+## 1D models
 include("earth_models_1d.jl")
-
-#================
-Predefined models
-================#
+# Predefined 1D models
 include("prem.jl")
 include("ak135.jl")
 
