@@ -23,7 +23,7 @@ export
     Qκ, Qkappa,
 
     # Derived properties
-    g,
+    gravity,
     mass,
     pressure,
     surface_mass,

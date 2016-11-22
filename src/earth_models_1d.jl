@@ -247,11 +247,11 @@ surface_mass(m::EarthModel1D, r) = mass(m.a) - mass(r)
 
 const NewtonG = 6.67428e-11
 """
-    g(m::EarthModel1D, r) -> g
+    gravity(m::EarthModel1D, r) -> g
 
 Return the acceleration due to gravity, `g`, in m/s^2 at radius `r` km.
 """
-g(m::EarthModel1D, r) = (r == 0) ? 0. : NewtonG*mass(m, r)/(r*1.e3)^2
+gravity(m::EarthModel1D, r) = (r == 0) ? 0. : NewtonG*mass(m, r)/(r*1.e3)^2
 
 """
     pressure(m::EarthModel1D, r) -> p
@@ -262,4 +262,4 @@ function pressure(m::EarthModel1D, r)
     f(r) = pressure_integration_func(m, r)
     1.e3*quadgk(f, r, m.a)[1]
 end
-pressure_integration_func(m::EarthModel1D, r) = 1.e3*rho(m, r)*g(m, r)
+pressure_integration_func(m::EarthModel1D, r) = 1.e3*rho(m, r)*gravity(m, r)
