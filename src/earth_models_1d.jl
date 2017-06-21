@@ -263,3 +263,19 @@ function pressure(m::EarthModel1D, r)
     1.e3*quadgk(f, r, m.a)[1]
 end
 pressure_integration_func(m::EarthModel1D, r) = 1.e3*rho(m, r)*gravity(m, r)
+
+"""
+    bulk_modulus(m::EarthModel1D, r) -> K
+
+Return the bulk modulus `K` in GPa at radius r in the model `m`.
+"""
+bulk_modulus(m::EarthModel1D, r) = rho(m, r)*vp(m, r)^2 - 4/3*shear_modulus(m, r)
+bulk_modulus(m::EarthModel1D, r::AbstractArray) = [bulk_modulus(m, R) for R in r]
+
+"""
+    shear_modulus(m::EarthModel1D, r) -> μ
+
+Return the shear modulus `μ` in GPa at radius r in the model `m`.
+"""
+shear_modulus(m::EarthModel1D, r) = vs(m, r)^2*rho(m, r)
+shear_modulus(m::EarthModel1D, r::AbstractArray) = [shear_modulus(m, R) for R in r]

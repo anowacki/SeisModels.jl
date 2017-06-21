@@ -27,9 +27,11 @@ export
     Qκ, Qkappa,
 
     # Derived properties
+    bulk_modulus,
     gravity,
     mass,
     pressure,
+    shear_modulus,
     surface_mass,
 
     # Models
