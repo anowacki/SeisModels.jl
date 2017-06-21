@@ -1,7 +1,7 @@
 #==============
 1D Earth models
 ==============#
-abstract EarthModel1D <: EarthModel
+@compat abstract type EarthModel1D <: EarthModel end
 
 const model_variables_EarthModel1D = (:vp, :vs, :rho, :vph, :vpv, :vsh, :vsv, :eta, :Qμ, :Qκ)
 const model_names_EarthModel1D = ("Vp", "Vs", "density", "Vph", "Vpv", "Vsh", "Vsv", "η", "Qμ", "Qκ")

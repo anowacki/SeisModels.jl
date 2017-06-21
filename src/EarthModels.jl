@@ -1,4 +1,8 @@
+__precompile__()
+
 module EarthModels
+
+import Compat: @compat
 
 import Base: eta
 
@@ -33,7 +37,7 @@ export
     PREM
 
 # Type of which all others are subtypes
-abstract EarthModel
+@compat abstract type EarthModel end
 
 ## 1D models
 include("earth_models_1d.jl")
