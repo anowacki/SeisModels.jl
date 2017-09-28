@@ -6,6 +6,8 @@ import Compat: @compat
 
 import Base: eta
 
+import QuadGK.quadgk
+
 export
     # Model types
     EarthModel,
