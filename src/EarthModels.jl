@@ -2,11 +2,9 @@ __precompile__()
 
 module EarthModels
 
-import Compat: @compat
-
 import Base: eta
 
-import QuadGK.quadgk
+import QuadGK: quadgk
 
 export
     # Model types
@@ -15,6 +13,11 @@ export
     LinearLayeredModel,
     PREMPolyModel,
     SteppedLayeredModel,
+
+    # Model properties
+    depth,
+    radius,
+    surface_radius,
 
     # Evaluation functions
     vp,
@@ -41,7 +44,10 @@ export
     PREM
 
 # Type of which all others are subtypes
-@compat abstract type EarthModel end
+abstract type EarthModel end
+
+## Basic properties of models
+include("basic_properties.jl")
 
 ## 1D models
 include("earth_models_1d.jl")

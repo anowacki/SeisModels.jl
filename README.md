@@ -107,4 +107,4 @@ Calling up the interactive help with give a useful description of each.
 
 
 ## Dependencies
-None.  The package has been tested on Julia v0.4 and v0.5
+QuadGK.  The package has been tested on Julia v0.6.

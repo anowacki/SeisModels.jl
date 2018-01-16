@@ -1,7 +1,7 @@
 #==============
 1D Earth models
 ==============#
-@compat abstract type EarthModel1D <: EarthModel end
+abstract type EarthModel1D <: EarthModel end
 
 const model_variables_EarthModel1D = (:vp, :vs, :rho, :vph, :vpv, :vsh, :vsv, :eta, :Qμ, :Qκ)
 const model_names_EarthModel1D = ("Vp", "Vs", "density", "Vph", "Vpv", "Vsh", "Vsv", "η", "Qμ", "Qκ")
@@ -36,7 +36,7 @@ at a radius of r km, the expression is:
 
     val_x = x[i,1] + (r/a)*x[i,2] + (r/a)^2*x[i,3] ... (r/a)^order*x[i,order+1]
 """
-immutable PREMPolyModel <: EarthModel1D
+struct PREMPolyModel <: EarthModel1D
     "Earth radius in km"
     a :: Float64
     "Number of distinct layers"
@@ -98,7 +98,7 @@ end
 A `SteppedLayeredModel` contains `n` layers with maximum radius `r` km,
 each with a constant velocity.
 """
-immutable SteppedLayeredModel <: EarthModel1D
+struct SteppedLayeredModel <: EarthModel1D
     "Earth radius in km"
     a :: Float64
     "Number of layers"
@@ -138,7 +138,7 @@ linear interpolation between them.  Hence there are `n - 1` layers.
 
 Discontinuities are represented by two layers with the same radii.
 """
-immutable LinearLayeredModel <: EarthModel1D
+struct LinearLayeredModel <: EarthModel1D
     "Earth radius in km"
     a :: Float64
     "Number of layers"
@@ -243,7 +243,7 @@ end
 
 Return the mass in kg betwen radius `r` km and the surface.
 """
-surface_mass(m::EarthModel1D, r) = mass(m.a) - mass(r)
+surface_mass(m::EarthModel1D, r) = mass(m, m.a) - mass(m, r)
 
 const NewtonG = 6.67428e-11
 """
