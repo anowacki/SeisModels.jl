@@ -48,6 +48,11 @@ export
 # Type of which all others are subtypes
 abstract type EarthModel end
 
+# Allow models to be broadcasted as scalars
+@static if VERSION >= v"0.7-"
+    Base.broadcastable(x::EarthModel) = Ref(x)
+end
+
 ## Basic properties of models
 include("basic_properties.jl")
 
