@@ -1,3 +1,11 @@
+"""
+# PREM
+
+## Reference
+
+Dziewoński, A., Anderson, D., 1981. Preliminary reference Earth model.
+Phys. Earth Planet. Inter. 25, 297–356. https://doi.org/10.1016/0031-9201(81)90046-7
+"""
 PREM = PREMPolyModel(6371., 13,
     # r
     [1221.5, 3480.0, 3630.0, 5600.0, 5701.0, 5771.0, 5971.0, 6151.0, 

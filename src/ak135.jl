@@ -1,4 +1,12 @@
-"AK135 linear layered model"
+"""
+# AK135
+
+## Reference
+
+Kennett, B.L.N., Engdahl, E., Buland, R., 1995. Constraints on seismic velocities in
+the Earth from travel-times. Geophys J Int 122, 108–124.
+https://doi.org/10.1111/j.1365-246X.1995.tb03540.x
+"""
 const AK135 = LinearLayeredModel(6371., 136,
     # radius
     6371. .- reverse([ 0.0, 20.0, 20.0, 35.0, 35.0, 77.5, 120.0, 165.0, 210.0, 210.0,

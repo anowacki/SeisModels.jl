@@ -9,6 +9,13 @@ Return the `depth` in km for the model `m` given a `radius` in km.
 depth(m::EarthModel, radius) = surface_radius(m) - radius
 
 """
+    isanisotropic(m) -> ::Bool
+
+Return `true` if the model `m` is anisotropic and `false` otherwise.
+"""
+isanisotropic(m::EarthModel) = m.aniso
+
+"""
     radius(m, depth) -> radius
 
 Return the `radius` in km for the model `m` given a `depth` in km.

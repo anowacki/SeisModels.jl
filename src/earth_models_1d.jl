@@ -1,10 +1,14 @@
 #==============
 1D Earth models
 ==============#
+"""
+Abstract type for radially-symmetric models of the Earth.  1D Earth models should
+be subtypes of this.
+"""
 abstract type EarthModel1D <: EarthModel end
 
 const model_variables_EarthModel1D = (:vp, :vs, :rho, :vph, :vpv, :vsh, :vsv, :eta, :Qμ, :Qκ)
-const model_names_EarthModel1D = ("Vp", "Vs", "density", "Vph", "Vpv", "Vsh", "Vsv", "η", "Qμ", "Qκ")
+const model_names_EarthModel1D = ("isotropic average Vp", "isotropic average Vs", "density", "Vph", "Vpv", "Vsh", "Vsv", "η", "Qμ", "Qκ")
 const model_units_EarthModel1D = (" (km/s)", " (km/s)", " (g/cm^3)", " (km/s)", " (km/s)", " (km/s)", " (km/s)", "", "", "")
 
 """
@@ -179,6 +183,21 @@ end
 
 ## Derived quantities
 """
+    bulk_modulus(m::EarthModel1D, r) -> K
+
+Return the bulk modulus `K` in GPa at radius `r` in the model `m`.
+"""
+bulk_modulus(m::EarthModel1D, r) = rho(m, r)*vp(m, r)^2 - 4/3*shear_modulus(m, r)
+
+const NewtonG = 6.67428e-11
+"""
+    gravity(m::EarthModel1D, r) -> g
+
+Return the acceleration due to gravity, `g`, in m/s^2 at radius `r` km.
+"""
+gravity(m::EarthModel1D, r) = (r == 0) ? 0. : NewtonG*mass(m, r)/(r*1.e3)^2
+
+"""
     mass(m::EarthModel1D, r) -> mass
 
 Return the mass in kg between the centre of the model and the radius `r` km.
@@ -234,21 +253,6 @@ function mass(m::LinearLayeredModel, r)
 end
 
 """
-    surface_mass(m::EarthModel1D, r) -> mass
-
-Return the mass in kg betwen radius `r` km and the surface.
-"""
-surface_mass(m::EarthModel1D, r) = mass(m, m.a) - mass(m, r)
-
-const NewtonG = 6.67428e-11
-"""
-    gravity(m::EarthModel1D, r) -> g
-
-Return the acceleration due to gravity, `g`, in m/s^2 at radius `r` km.
-"""
-gravity(m::EarthModel1D, r) = (r == 0) ? 0. : NewtonG*mass(m, r)/(r*1.e3)^2
-
-"""
     pressure(m::EarthModel1D, r) -> p
 
 Return the pressure `p` in Pa at radius `r` km.
@@ -260,15 +264,35 @@ end
 pressure_integration_func(m::EarthModel1D, r) = 1.e3*rho(m, r)*gravity(m, r)
 
 """
-    bulk_modulus(m::EarthModel1D, r) -> K
+    poissons_ratio(m, r) -> ν
 
-Return the bulk modulus `K` in GPa at radius r in the model `m`.
+Return the Poisson's ratio for the model `m` given a radius `r` in km.
+The calculation uses the isotropic average velocities at `r`.
 """
-bulk_modulus(m::EarthModel1D, r) = rho(m, r)*vp(m, r)^2 - 4/3*shear_modulus(m, r)
+function poissons_ratio(m::EarthModel1D, r)
+    G = shear_modulus(m, r)
+    K = bulk_modulus(m, r)
+    (3K - 2G)/(6K + 2G)
+end
 
 """
     shear_modulus(m::EarthModel1D, r) -> μ
 
-Return the shear modulus `μ` in GPa at radius r in the model `m`.
+Return the shear modulus `μ` (often also called G) in GPa at radius `r` in the
+model `m`.
 """
 shear_modulus(m::EarthModel1D, r) = vs(m, r)^2*rho(m, r)
+
+"""
+    surface_mass(m::EarthModel1D, r) -> mass
+
+Return the mass in kg betwen radius `r` km and the surface.
+"""
+surface_mass(m::EarthModel1D, r) = mass(m, m.a) - mass(m, r)
+
+"""
+    youngs_modulus(m, r) -> E
+
+Return the Young's modulus `E` in GPa for the model `m` given a radius `r` in km.
+"""
+youngs_modulus(m::EarthModel1D, r) = 2*shear_modulus(m, r)*(1 + poissons_ratio(m, r))
