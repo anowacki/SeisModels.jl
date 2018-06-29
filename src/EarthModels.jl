@@ -2,7 +2,9 @@ __precompile__()
 
 module EarthModels
 
-import Base: eta
+@static if VERSION < v"0.7-"
+    import Base: eta
+end
 
 import QuadGK: quadgk
 

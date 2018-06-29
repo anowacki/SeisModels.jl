@@ -63,11 +63,11 @@ end
 # Evaluation routines--all documented here
 for (sym, name, unit) in zip(model_variables_EarthModel1D, model_names_EarthModel1D, model_units_EarthModel1D)
     @eval begin
-        @doc """
+        """
             $(split(string($sym), ".")[end])(m::EarthModel1D, r) -> $($name)
         
         Return the value of $($name)$($unit) for model `m` at radius `r` km.
-        """ ->
+        """
         function ($sym)(m::PREMPolyModel, r::Real)
             length(m.$sym) > 0 || error("$($name) not defined for model")
             ir = findlayer(m, r)
@@ -84,11 +84,6 @@ end
 const ρ = rho
 const Qmu = Qμ
 const Qkappa = Qκ
-
-# Allow evaluation of multiple points simultaneously
-for sym in model_variables_EarthModel1D
-    @eval $sym(m::EarthModel1D, r::AbstractArray) = [$sym(m, R) for R in r]
-end
 
 
 
@@ -270,7 +265,6 @@ pressure_integration_func(m::EarthModel1D, r) = 1.e3*rho(m, r)*gravity(m, r)
 Return the bulk modulus `K` in GPa at radius r in the model `m`.
 """
 bulk_modulus(m::EarthModel1D, r) = rho(m, r)*vp(m, r)^2 - 4/3*shear_modulus(m, r)
-bulk_modulus(m::EarthModel1D, r::AbstractArray) = [bulk_modulus(m, R) for R in r]
 
 """
     shear_modulus(m::EarthModel1D, r) -> μ
@@ -278,4 +272,3 @@ bulk_modulus(m::EarthModel1D, r::AbstractArray) = [bulk_modulus(m, R) for R in r
 Return the shear modulus `μ` in GPa at radius r in the model `m`.
 """
 shear_modulus(m::EarthModel1D, r) = vs(m, r)^2*rho(m, r)
-shear_modulus(m::EarthModel1D, r::AbstractArray) = [shear_modulus(m, R) for R in r]

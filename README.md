@@ -101,7 +101,7 @@ search: PREMPolyModel
 
 ### Documentation
 Documentation is a work in progress, but all useful commands are documented.
-To see the list of commands, check the code, or in the REPL type `SAC.` then
+To see the list of commands, check the code, or in the REPL type `EarthModels.` then
 press tab a couple of times to see all the module methods and variables.
 Calling up the interactive help with give a useful description of each.
 
