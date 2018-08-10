@@ -74,6 +74,7 @@ export
     bulk_modulus,
     gravity,
     mass,
+    moment_of_inertia,
     poissons_ratio,
     pressure,
     shear_modulus,

@@ -299,10 +299,10 @@ youngs_modulus(m::EarthModel1D, r) = 2*shear_modulus(m, r)*(1 + poissons_ratio(m
 
 
 """
-    moment_of_inertia(m, r0, r1) -> I
+    moment_of_inertia(m, r0=0, r1=surface_radius(m)) -> I
 
 Return the moment of interia `I` in kg m² for the model `m` between radii `r0`
 and `r1` in km.
 """
-moment_of_inertia(m::EarthModel1D, r0, r1) =
+moment_of_inertia(m::EarthModel1D, r0=0, r1=surface_radius(m)) =
     8/3*π*quadgk(r->1e3*rho(m, r/1e3)*r^4, r0*1e3, r1*1e3)[1]
