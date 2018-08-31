@@ -59,6 +59,7 @@ export
     surface_radius,
 
     # Evaluation functions
+    evaluate,
     vp,
     vs,
     rho,
@@ -83,7 +84,11 @@ export
 
     # Models
     AK135,
-    PREM
+    PREM,
+
+    # IO
+    read_mineos,
+    write_mineos
 
 """
 Abstract supertype of all models of the Earth in the `EarthModels` module.

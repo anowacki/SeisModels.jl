@@ -14,8 +14,10 @@ Although not registered as an official package, EarthModels.jl can be added to y
 Julia install like so:
 
 ```julia
-Pkg.clone("https://github.com/anowacki/EartModels.jl")
+julia> import Pkg; Pkg.add("https://github.com/anowacki/EarthModels.jl")
 ```
+
+(On version 0.6 of Julia, instead use the command `Pkg.clone("https://github.com/anowacki/EarthModels.jl")`.)
 
 You then need only do
 
@@ -76,6 +78,25 @@ julia> rho(AK135, AK135.a-20)
 In the last example, we used the `a` field of the AK135 model type, which is the
 radius of the Earth in km in the model, to calculate the density at 20 km depth.
 
+You can also evaluate values programmatically (i.e., where the parameter of
+interest is a variable) by using the exported `evaluate` function, and broadcast
+the call to get multiple values:
+
+```julia
+julia> evaluate(AK135, :vp, 3580)
+13.653094354838709
+
+julia> parameters = (:vp, :vs, :rho);
+
+julia> evaluate.(AK135, parameters, 3680)
+(13.591187999999999, 7.226264, 5.4003499999999995)
+```
+
+### Model input and output
+Support for reading and writing model files is currently limited.  However, EarthModels
+does support reading and writing of
+[Mineos](https://geodynamics.org/cig/software/mineos/)-format &lsquo;tabular&rsquo; models
+(i.e., `SteppedLayeredModel`s) via the `read_mineos` and `write_mineos` functions.
 
 ## Getting help
 Types and methods are documented, so at the REPL type `?` to get a `help?>`
@@ -104,7 +125,3 @@ Documentation is a work in progress, but all useful commands are documented.
 To see the list of commands, check the code, or in the REPL type `EarthModels.` then
 press tab a couple of times to see all the module methods and variables.
 Calling up the interactive help with give a useful description of each.
-
-
-## Dependencies
-QuadGK.  The package has been tested on Julia v0.6.

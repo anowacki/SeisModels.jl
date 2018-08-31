@@ -89,6 +89,24 @@ const ρ = rho
 const Qmu = Qμ
 const Qkappa = Qκ
 
+"""
+    evaluate(m::EarthModel1D, field::Symbol, r) -> vals
+
+Evaluate the model `m` at radius `r` km for the different property/ies in `field`,
+returning a scalar for scalar input, and an array for array input.
+"""
+function evaluate(m::PREMPolyModel, field::Symbol, r)
+    y = getfield(m, field)
+    length(y) > 0 || error("'$field' not defined for model")
+    ir = findlayer(m, r)
+    x = r/m.a
+    val = y[1,ir]
+    for k in 2:size(y, 1)
+        val = val + y[k,ir]*x^(k-1)
+    end
+    val
+end
+
 
 
 """
@@ -123,9 +141,14 @@ end
 
 for sym in model_variables_EarthModel1D
     @eval function ($sym)(m::SteppedLayeredModel, r::Real)
-        length(m.$sym) > 0 || error("$(split(string($sym), ".")[end]) not defined for model")
+        length(m.$sym) > 0 || error("'$split(string($sym), ".")[end]' not defined for model")
         m.$(sym)[findlayer(m, r)]
     end
+end
+
+function evaluate(m::SteppedLayeredModel, field::Symbol, r)
+    length(getfield(m, field)) > 0 || error("$field' not defined for model")
+    getfield(m, field)[findlayer(m, r)]
 end
 
 
@@ -172,13 +195,23 @@ end
 
 for sym in model_variables_EarthModel1D
     @eval function ($sym)(m::LinearLayeredModel, r::Real)
-        length(m.$sym) > 0 || error("$(split(string($sym), ".")[end]) not defined for model")
+        length(m.$sym) > 0 || error("'$(split(string($sym), ".")[end])' not defined for model")
         ir = findlayer(m, r)
         r0 = m.r[ir]
         r1 = m.r[ir+1]
         (m.$sym[ir]*(r1 - r) + m.$sym[ir+1]*(r - r0))/(r1 - r0)
     end
 end
+
+function evaluate(m::LinearLayeredModel, field::Symbol, r)
+    y = getfield(m, field)
+    length(y) > 0 || error("'$field' not defined for model")
+    ir = findlayer(m, r)
+    r0 = m.r[ir]
+    r1 = m.r[ir+1]
+    (y[ir]*(r1 - r) + y[ir+1]*(r - r0))/(r1 - r0)
+end
+
 
 
 ## Derived quantities
