@@ -1,5 +1,3 @@
-__precompile__()
-
 """
 # EarthModels
 
@@ -37,10 +35,6 @@ Derived properties can be computed for all models:
 - AK135
 """
 module EarthModels
-
-@static if VERSION < v"0.7-"
-    import Base: eta
-end
 
 import QuadGK: quadgk
 
@@ -98,9 +92,7 @@ subtypes.
 abstract type EarthModel end
 
 # Allow models to be broadcasted as scalars
-@static if VERSION >= v"0.7-"
-    Base.broadcastable(x::EarthModel) = Ref(x)
-end
+Base.broadcastable(x::EarthModel) = Ref(x)
 
 ## Basic properties of models
 include("basic_properties.jl")
