@@ -7,7 +7,8 @@ be subtypes of this.
 """
 abstract type EarthModel1D <: EarthModel end
 
-const model_variables_EarthModel1D = (:vp, :vs, :rho, :vph, :vpv, :vsh, :vsv, :eta, :Qμ, :Qκ)
+const model_variables_EarthModel1D = (:vp, :vs, :density, :vph, :vpv, :vsh, :vsv,
+    :eta, :Qμ, :Qκ)
 const model_names_EarthModel1D = ("isotropic average Vp", "isotropic average Vs",
     "density", "Vph", "Vpv", "Vsh", "Vsv", "η", "Qμ", "Qκ")
 const model_units_EarthModel1D = (" (km/s)", " (km/s)", " (g/cm^3)", " (km/s)",
@@ -52,7 +53,7 @@ struct PREMPolyModel <: EarthModel1D
     "Physical parameters"
     vp :: Array{Float64}
     vs :: Array{Float64}
-    rho :: Array{Float64}
+    density :: Array{Float64}
     "Optional anisotropic parameters"
     aniso :: Bool
     vph :: Array{Float64}
@@ -87,7 +88,7 @@ for (sym, name, unit) in zip(model_variables_EarthModel1D, model_names_EarthMode
     end
 end
 # Alternative names
-const ρ = rho
+const ρ = density
 const Qmu = Qμ
 const Qkappa = Qκ
 
@@ -127,7 +128,7 @@ struct SteppedLayeredModel <: EarthModel1D
     "Physical parameters"
     vp :: Vector{Float64}
     vs :: Vector{Float64}
-    rho :: Vector{Float64}
+    density :: Vector{Float64}
     "Optional anisotropic parameters"
     aniso :: Bool
     vph :: Vector{Float64}
@@ -172,7 +173,7 @@ struct LinearLayeredModel <: EarthModel1D
     "Physical parameters"
     vp :: Vector{Float64}
     vs :: Vector{Float64}
-    rho :: Vector{Float64}
+    density :: Vector{Float64}
     "Optional anisotropic parameters"
     aniso :: Bool
     vph :: Vector{Float64}
@@ -222,7 +223,7 @@ end
 
 Return the bulk modulus `K` in GPa at radius `r` in the model `m`.
 """
-bulk_modulus(m::EarthModel1D, r) = rho(m, r)*vp(m, r)^2 - 4/3*shear_modulus(m, r)
+bulk_modulus(m::EarthModel1D, r) = density(m, r)*vp(m, r)^2 - 4/3*shear_modulus(m, r)
 
 const NewtonG = 6.67428e-11
 """
@@ -252,8 +253,8 @@ function mass(m::PREMPolyModel, r)
 		else
 			R = r
 		end
-        for k in 1:size(m.rho, 1)
-            rho = m.rho[k,i]/m.a^(k-1)*1.e3^(2-k)/(k+2)
+        for k in 1:size(m.density, 1)
+            rho = m.density[k,i]/m.a^(k-1)*1.e3^(2-k)/(k+2)
             M += rho*(R^(k+2) - R0^(k+2))
         end
 	end
@@ -267,7 +268,7 @@ function mass(m::SteppedLayeredModel, r)
     for i in 1:l
         R0 = i == 1 ? 0. : m.r[i-1]*1.e3
         R = i < l ? m.r[i]*1.e3 : r
-        M += m.rho[i]*(R^3 - R0^3)
+        M += m.density[i]*(R^3 - R0^3)
     end
     4/3*π*M
 end
@@ -280,8 +281,8 @@ function mass(m::LinearLayeredModel, r)
         m.r[i] == m.r[i+1] && continue
         R0 = m.r[i]*1.e3
         R = i == l ? r : m.r[i+1]*1.e3
-        dρ_dr = 1.e3*(m.rho[i+1] - m.rho[i])/(m.r[i+1]*1.e3 - R0)
-        ρ0 = 1.e3*m.rho[i] - dρ_dr*R0
+        dρ_dr = 1.e3*(m.density[i+1] - m.density[i])/(m.r[i+1]*1.e3 - R0)
+        ρ0 = 1.e3*m.density[i] - dρ_dr*R0
         M += ρ0*(R^3 - R0^3)/3 + dρ_dr*(R^4 - R0^4)/4
     end
     4*π*M
@@ -296,7 +297,7 @@ function pressure(m::EarthModel1D, r)
     f(r) = pressure_integration_func(m, r)
     1.e3*quadgk(f, r, m.a)[1]
 end
-pressure_integration_func(m::EarthModel1D, r) = 1.e3*rho(m, r)*gravity(m, r)
+pressure_integration_func(m::EarthModel1D, r) = 1.e3*density(m, r)*gravity(m, r)
 
 """
     poissons_ratio(m, r) -> ν
@@ -316,7 +317,7 @@ end
 Return the shear modulus `μ` (often also called G) in GPa at radius `r` in the
 model `m`.
 """
-shear_modulus(m::EarthModel1D, r) = vs(m, r)^2*rho(m, r)
+shear_modulus(m::EarthModel1D, r) = vs(m, r)^2*density(m, r)
 
 """
     surface_mass(m::EarthModel1D, r) -> mass
@@ -340,4 +341,4 @@ Return the moment of interia `I` in kg m² for the model `m` between radii `r0`
 and `r1` in km.
 """
 moment_of_inertia(m::EarthModel1D, r0=0, r1=surface_radius(m)) =
-    8/3*π*quadgk(r->1e3*rho(m, r/1e3)*r^4, r0*1e3, r1*1e3)[1]
+    8/3*π*quadgk(r->1e3*density(m, r/1e3)*r^4, r0*1e3, r1*1e3)[1]

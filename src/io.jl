@@ -64,7 +64,7 @@ function write_mineos(m::SteppedLayeredModel, file, freq=1.0, title="Model from 
     N = m.n
     N > 350 && @warn("Mineos model files are limited to N ≤ 350 (have $N layers)")
     nic, noc = core_interface_layers(m)
-    rho, vp, vs = m.rho.*1e3, m.vp.*1e3, m.vs.*1e3
+    rho, vp, vs = m.density.*1e3, m.vp.*1e3, m.vs.*1e3
     if m.aniso
         vpv, vph, vsv, vsh, eta = m.vpv.*1e3, m.vph.*1e3, m.vsv.*1e3, m.vsh.*1e3, m.eta
     else

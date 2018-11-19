@@ -10,7 +10,7 @@ All models should have:
 
 - P-wave velocity (accessed with the `vp` function) in km/s
 - S-wave velocity (`vs`) in km/s
-- Density (`rho`) in g/cm^3
+- Density (`density`) in g/cm^3
 - (Average) Earth surface radius (`surface_radius`) in km
 
 Models may also provide:
@@ -56,7 +56,7 @@ export
     evaluate,
     vp,
     vs,
-    rho,
+    density,
     vph,
     vpv,
     vsh,
@@ -105,5 +105,10 @@ include("ak135.jl")
 
 ## IO
 include("io.jl")
+
+## Deprecated functions
+rho(m::EarthModel, args...; kwargs...) =
+    (@warn("`rho` is deprecated; use `density` instead"); density(m, args...; kwargs...))
+export rho
 
 end # module

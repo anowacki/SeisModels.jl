@@ -70,7 +70,7 @@ julia> vp(PREM, 3500)
 julia> Qκ(PREM, 1000)
 1327.7
 
-julia> rho(AK135, radius(AK135, 20))
+julia> density(AK135, radius(AK135, 20))
 2.449
 ```
 
@@ -85,7 +85,7 @@ the call to get multiple values:
 julia> evaluate(AK135, :vp, 3580)
 13.653094354838709
 
-julia> parameters = (:vp, :vs, :rho);
+julia> parameters = (:vp, :vs, :density);
 
 julia> evaluate.(AK135, parameters, 3680)
 (13.591187999999999, 7.226264, 5.4003499999999995)
@@ -121,7 +121,7 @@ does support reading and writing of
 - `evaluate`: Evaluate a given field for a model at any radius
 - `vp`: P-wave velocity in km/s
 - `vs`: S-wave velocity in km/s
-- `rho`: Density in g/cm^3
+- `density`: Density in g/cm^3
 - `vph`: Horizontal P-wave velocity in km/s
 - `vpv`: Vertical (radial) P-wave velocity in km/s
 - `vsh`: Horizontally-polarised S-wave velocity in km/s

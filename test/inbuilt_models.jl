@@ -16,5 +16,7 @@ using EarthModels
         @test isanisotropic(PREM) == true
         @test vp(PREM, 0) ≈ 11.2622
         @test Qμ(PREM, 1000) ≈ 84.6
+        @test moment_of_inertia(PREM)/(
+            mass(PREM, surface_radius(PREM))*surface_radius(PREM)^2*1e6) ≈ 0.3308 atol=0.0001
     end
 end
