@@ -1,5 +1,10 @@
 # EarthModels.jl
 
+[![Build Status](https://travis-ci.org/anowacki/EarthModels.jl.svg?branch=master)](https://travis-ci.org/anowacki/EarthModels.jl)
+[![Build status](https://ci.appveyor.com/api/projects/status/x74sjgeor8segcmc?svg=true)](https://ci.appveyor.com/project/AndyNowacki/earthmodels-jl)
+[![Coverage Status](https://coveralls.io/repos/github/anowacki/EarthModels.jl/badge.svg?branch=master)](https://coveralls.io/github/anowacki/EarthModels.jl?branch=master)
+
+
 ## What is EarthModels.jl?
 A [Julia](http://julialang.org) package for dealing with models of the Earth's
 (and other quasi-1D planets') seismic properties.
