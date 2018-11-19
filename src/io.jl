@@ -56,13 +56,13 @@ frequency `freq` in Hz and a `title`.
 """
 function write_mineos(m::SteppedLayeredModel, file, freq=1.0, title="Model from EarthModels.jl")
     length(title) > 80 &&
-        warn("Mineos model files can have titles only 80 characters long " *
-             "('$title' is $(length(title)) characters)")
+        @warn("Mineos model files can have titles only 80 characters long " *
+              "('$title' is $(length(title)) characters)")
     ifanis = m.aniso ? 1 : 0
     tref = freq
     ifdeck = 1
     N = m.n
-    N > 350 && warn("Mineos model files are limited to N ≤ 350 (have $N layers)")
+    N > 350 && @warn("Mineos model files are limited to N ≤ 350 (have $N layers)")
     nic, noc = core_interface_layers(m)
     rho, vp, vs = m.rho.*1e3, m.vp.*1e3, m.vs.*1e3
     if m.aniso

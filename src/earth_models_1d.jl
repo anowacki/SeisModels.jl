@@ -8,8 +8,10 @@ be subtypes of this.
 abstract type EarthModel1D <: EarthModel end
 
 const model_variables_EarthModel1D = (:vp, :vs, :rho, :vph, :vpv, :vsh, :vsv, :eta, :Qμ, :Qκ)
-const model_names_EarthModel1D = ("isotropic average Vp", "isotropic average Vs", "density", "Vph", "Vpv", "Vsh", "Vsv", "η", "Qμ", "Qκ")
-const model_units_EarthModel1D = (" (km/s)", " (km/s)", " (g/cm^3)", " (km/s)", " (km/s)", " (km/s)", " (km/s)", "", "", "")
+const model_names_EarthModel1D = ("isotropic average Vp", "isotropic average Vs",
+    "density", "Vph", "Vpv", "Vsh", "Vsv", "η", "Qμ", "Qκ")
+const model_units_EarthModel1D = (" (km/s)", " (km/s)", " (g/cm^3)", " (km/s)",
+    " (km/s)", " (km/s)", " (km/s)", "", "", "")
 
 """
     findlayer(m::EarthModel1D, r) -> layer_index

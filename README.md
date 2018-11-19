@@ -2,9 +2,11 @@
 
 ## What is EarthModels.jl?
 A [Julia](http://julialang.org) package for dealing with models of the Earth's
-seismic properties.
+(and other quasi-1D planets') seismic properties.
 
-Currently, only three kinds of one-dimensional models are supported.
+Currently, only three kinds of one-dimensional models are supported, but all model
+parameterisations and models are acceptable for inclusion.  Contributions
+are welcome.
 
 Built in models are PREM and AK135.
 
@@ -19,14 +21,6 @@ julia> import Pkg; Pkg.add("https://github.com/anowacki/EarthModels.jl")
 
 (On version 0.6 of Julia, instead use the command `Pkg.clone("https://github.com/anowacki/EarthModels.jl")`.)
 
-You then need only do
-
-```julia
-using EarthModels
-```
-
-and if that works, you're ready to go.
-
 
 ## How to use
 ### Model types
@@ -38,13 +32,13 @@ julia> using EarthModels
 
 julia> subtypes(EarthModel)
 1-element Array{Any,1}:
- EarthModels.EarthModel1D
+ EarthModel1D
 
 julia> subtypes(EarthModel1D)
 3-element Array{Any,1}:
- EarthModels.LinearLayeredModel 
- EarthModels.PREMPolyModel      
- EarthModels.SteppedLayeredModel
+ LinearLayeredModel
+ PREMPolyModel
+ SteppedLayeredModel
 ```
 
 So, there are currently three types of models implemented, all 1D models, with
@@ -53,7 +47,7 @@ polynomial, linear or constant basis within each layer.
 ### Calculating properties
 
 You can either create your own models by creating a new instance of one of the
-immutable types, or use the inbuilt models.  For instance, for PREM, once can
+immutable types, or use the inbuilt models.  For instance, for PREM, one can
 evaluate at an arbitrary radius:
 
 * *V*<sub>P</sub>
@@ -71,12 +65,12 @@ julia> vp(PREM, 3500)
 julia> Qκ(PREM, 1000)
 1327.7
 
-julia> rho(AK135, AK135.a-20)
+julia> rho(AK135, radius(AK135, 20))
 2.449
 ```
 
-In the last example, we used the `a` field of the AK135 model type, which is the
-radius of the Earth in km in the model, to calculate the density at 20 km depth.
+In the last example, we used the `radius` function to convert depth in the AK135 model
+to radius and calculate the density at 20 km depth.
 
 You can also evaluate values programmatically (i.e., where the parameter of
 interest is a variable) by using the exported `evaluate` function, and broadcast
@@ -97,6 +91,55 @@ Support for reading and writing model files is currently limited.  However, Eart
 does support reading and writing of
 [Mineos](https://geodynamics.org/cig/software/mineos/)-format &lsquo;tabular&rsquo; models
 (i.e., `SteppedLayeredModel`s) via the `read_mineos` and `write_mineos` functions.
+
+
+## Reference
+### Exported types
+- `EarthModel`: Abstract supertype of all models
+- `EarthModel1D`: Abstract supertype of 1D models
+- `LinearLayeredModel`: 1D model with linearly-varying properties between node points
+- `PREMPolyModel`: 1D model defined by PREM-style polynomials (of arbitrary degree)
+- `SteppedLayeredModel`: 1D model with constant properties between node points
+
+### Exported model instances
+- `AK135`
+- `PREM`
+
+### Exported functions
+#### Model properties
+- `depth`: Return depth in km given a radius and model
+- `isanisotropic`: Whether a model is anisotropic
+- `radius`: Return radius in km given a depth and model
+- `surface_radius`: Radius in km of planet
+
+#### Evaluation functions
+- `evaluate`: Evaluate a given field for a model at any radius
+- `vp`: P-wave velocity in km/s
+- `vs`: S-wave velocity in km/s
+- `rho`: Density in g/cm^3
+- `vph`: Horizontal P-wave velocity in km/s
+- `vpv`: Vertical (radial) P-wave velocity in km/s
+- `vsh`: Horizontally-polarised S-wave velocity in km/s
+- `vsv`: Vertically-polarised S-wave velocity in km/s
+- `eta`: Anisotropic parameter
+- `Qμ`, `Qmu`: Shear quality factor
+- `Qκ`, `Qkappa`: Bulk quality factor
+
+#### Derived properties
+- `bulk_modulus`: Bulk modulus (K) in Pa
+- `gravity`: Acceleration due to gravity in m/s^2 at a given radius
+- `mass`: Mass in kg from centre of model to a given radius
+- `moment_of_inertia`: MOI in kg m^2
+- `poissons_ratio`: Poisson's ratio
+- `pressure`: Pressure in Pa
+- `shear_modulus`: Shear modulus (G) in Pa
+- `surface_mass`: Mass between two radii
+- `youngs_modulus`: Young's modulus in Pa
+
+#### IO
+- `read_mineos`: Read Mineos tabular-format file
+- `write_mineos`: Write Mineos tabular-format file
+
 
 ## Getting help
 Types and methods are documented, so at the REPL type `?` to get a `help?>`
@@ -119,9 +162,3 @@ search: PREMPolyModel
   val_x = x[i,1] + (r/a)*x[i,2] + (r/a)^2*x[i,3] ... (r/a)^order*x[i,order+1]
 
 ```
-
-### Documentation
-Documentation is a work in progress, but all useful commands are documented.
-To see the list of commands, check the code, or in the REPL type `EarthModels.` then
-press tab a couple of times to see all the module methods and variables.
-Calling up the interactive help with give a useful description of each.
