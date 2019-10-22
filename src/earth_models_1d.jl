@@ -20,8 +20,8 @@ const model_units_EarthModel1D = (" (km/s)", " (km/s)", " (g/cm^3)", " (km/s)",
 Return the layer index in which radius `r` km is located in the EarthModel1D `m`.
 """
 function findlayer(m::EarthModel1D, r::Real)
-    r < 0. && error("Radius cannot be negative")
-    r > m.a && error("Radius $r km is greater than Earth radius for model ($(m.a) km)")
+    r < 0. && throw(DomainError(r, "radius cannot be negative"))
+    r > m.a && throw(DomainError(r, "radius is greater than Earth radius for model ($(m.a) km)"))
     for i in 1:length(m.r)
         r < m.r[i] && return i
     end
@@ -79,7 +79,7 @@ for (sym, name, unit) in zip(model_variables_EarthModel1D, model_names_EarthMode
         If `depth` is `true`, then `r` is given as a depth in km instead.
         """
         function ($sym)(m::PREMPolyModel, r::Real; depth::Bool=false)
-            length(m.$sym) > 0 || error("$($name) not defined for model")
+            length(m.$sym) > 0 || throw(ArgumentError("$($name) not defined for model"))
             depth && (r = radius(m, r))
             ir = findlayer(m, r)
             x = r/m.a
@@ -104,7 +104,7 @@ returning a scalar for scalar input, and an array for array input.
 """
 function evaluate(m::PREMPolyModel, field::Symbol, r; depth::Bool=false)
     y = getfield(m, field)
-    length(y) > 0 || error("'$field' not defined for model")
+    length(y) > 0 || throw(ArgumentError("'$field' not defined for model"))
     depth && (r = radius(m, r))
     ir = findlayer(m, r)
     x = r/m.a
@@ -149,14 +149,16 @@ end
 
 for sym in model_variables_EarthModel1D
     @eval function ($sym)(m::SteppedLayeredModel, r::Real; depth::Bool=false)
-        length(m.$sym) > 0 || error("'$split(string($sym), ".")[end]' not defined for model")
+        length(m.$sym) > 0 ||
+            throw(ArgumentError("'$split(string($sym), ".")[end]' not defined for model"))
         depth && (r = radius(m, r))
         m.$(sym)[findlayer(m, r)]
     end
 end
 
 function evaluate(m::SteppedLayeredModel, field::Symbol, r; depth::Bool=false)
-    length(getfield(m, field)) > 0 || error("$field' not defined for model")
+    length(getfield(m, field)) > 0 ||
+        throw(ArgumentError("$field' not defined for model"))
     depth && (r = radius(m, r))
     getfield(m, field)[findlayer(m, r)]
 end
@@ -205,7 +207,8 @@ end
 
 for sym in model_variables_EarthModel1D
     @eval function ($sym)(m::LinearLayeredModel, r::Real; depth::Bool=false)
-        length(m.$sym) > 0 || error("'$(split(string($sym), ".")[end])' not defined for model")
+        length(m.$sym) > 0 ||
+            throw(ArgumentError("'$(split(string($sym), ".")[end])' not defined for model"))
         depth && (r = radius(m, r))
         ir = findlayer(m, r)
         r0 = m.r[ir]
@@ -216,7 +219,8 @@ end
 
 function evaluate(m::LinearLayeredModel, field::Symbol, r; depth::Bool=false)
     y = getfield(m, field)
-    length(y) > 0 || error("'$field' not defined for model")
+    length(y) > 0 ||
+        throw(ArgumentError("'$field' not defined for model"))
     depth && (r = radius(m, r))
     ir = findlayer(m, r)
     r0 = m.r[ir]

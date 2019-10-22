@@ -8,7 +8,7 @@ using EarthModels
         @test vp(AK135, 0) ≈ 11.2622
         @test isanisotropic(AK135) == false
         @test !hasattenuation(AK135)
-        @test_throws ErrorException Qμ(AK135, 1000)
+        @test_throws ArgumentError Qμ(AK135, 1000)
     end
 
     @testset "PREM" begin
