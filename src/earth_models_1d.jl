@@ -35,11 +35,11 @@ end
 Type describing the Earth as a set of layers within which properties vary
 according to a set of polynomials.
 
-Physical parameters are represented by arrays of size (order+1,n), where `n`
+Physical parameters are represented by arrays of size `(order+1, n)`, where `n`
 is the number of layers, and `order` is the order of polynomial which is
-used to represent the parameter.  Hence a constant layer has size (1,n),
-and to compute the value of x in layer i, for an Earth radius of a km,
-at a radius of r km, the expression is:
+used to represent the parameter.  Hence a constant layer has size `(1,n)`,
+and to compute the value of `x` in layer `i`, for an Earth radius of `a` km,
+at a radius of `r` km, the expression is:
 
     val_x = x[i,1] + (r/a)*x[i,2] + (r/a)^2*x[i,3] ... (r/a)^order*x[i,order+1]
 """
@@ -68,15 +68,19 @@ struct PREMPolyModel <: EarthModel1D
 end
 
 # Evaluation routines--all documented here
+# TODO: Use Horner's method à la Base.@evalpoly
 for (sym, name, unit) in zip(model_variables_EarthModel1D, model_names_EarthModel1D, model_units_EarthModel1D)
     @eval begin
         """
-            $(split(string($sym), ".")[end])(m::EarthModel1D, r) -> $($name)
+            $(split(string($sym), ".")[end])(m::EarthModel1D, r; depth=false) -> $($name)
         
         Return the value of $($name)$($unit) for model `m` at radius `r` km.
+        
+        If `depth` is `true`, then `r` is given as a depth in km instead.
         """
-        function ($sym)(m::PREMPolyModel, r::Real)
+        function ($sym)(m::PREMPolyModel, r::Real; depth::Bool=false)
             length(m.$sym) > 0 || error("$($name) not defined for model")
+            depth && (r = radius(m, r))
             ir = findlayer(m, r)
             x = r/m.a
             val = m.$(sym)[1,ir]
@@ -98,9 +102,10 @@ const Qkappa = Qκ
 Evaluate the model `m` at radius `r` km for the different property/ies in `field`,
 returning a scalar for scalar input, and an array for array input.
 """
-function evaluate(m::PREMPolyModel, field::Symbol, r)
+function evaluate(m::PREMPolyModel, field::Symbol, r; depth::Bool=false)
     y = getfield(m, field)
     length(y) > 0 || error("'$field' not defined for model")
+    depth && (r = radius(m, r))
     ir = findlayer(m, r)
     x = r/m.a
     val = y[1,ir]
@@ -143,14 +148,16 @@ struct SteppedLayeredModel <: EarthModel1D
 end
 
 for sym in model_variables_EarthModel1D
-    @eval function ($sym)(m::SteppedLayeredModel, r::Real)
+    @eval function ($sym)(m::SteppedLayeredModel, r::Real; depth::Bool=false)
         length(m.$sym) > 0 || error("'$split(string($sym), ".")[end]' not defined for model")
+        depth && (r = radius(m, r))
         m.$(sym)[findlayer(m, r)]
     end
 end
 
-function evaluate(m::SteppedLayeredModel, field::Symbol, r)
+function evaluate(m::SteppedLayeredModel, field::Symbol, r; depth::Bool=false)
     length(getfield(m, field)) > 0 || error("$field' not defined for model")
+    depth && (r = radius(m, r))
     getfield(m, field)[findlayer(m, r)]
 end
 
@@ -197,8 +204,9 @@ function findlayer(m::LinearLayeredModel, r::Real)
 end
 
 for sym in model_variables_EarthModel1D
-    @eval function ($sym)(m::LinearLayeredModel, r::Real)
+    @eval function ($sym)(m::LinearLayeredModel, r::Real; depth::Bool=false)
         length(m.$sym) > 0 || error("'$(split(string($sym), ".")[end])' not defined for model")
+        depth && (r = radius(m, r))
         ir = findlayer(m, r)
         r0 = m.r[ir]
         r1 = m.r[ir+1]
@@ -206,9 +214,10 @@ for sym in model_variables_EarthModel1D
     end
 end
 
-function evaluate(m::LinearLayeredModel, field::Symbol, r)
+function evaluate(m::LinearLayeredModel, field::Symbol, r; depth::Bool=false)
     y = getfield(m, field)
     length(y) > 0 || error("'$field' not defined for model")
+    depth && (r = radius(m, r))
     ir = findlayer(m, r)
     r0 = m.r[ir]
     r1 = m.r[ir+1]

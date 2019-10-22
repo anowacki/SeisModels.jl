@@ -7,6 +7,7 @@ using EarthModels
         @test length(AK135.r) == 136
         @test vp(AK135, 0) ≈ 11.2622
         @test isanisotropic(AK135) == false
+        @test !hasattenuation(AK135)
         @test_throws ErrorException Qμ(AK135, 1000)
     end
 
@@ -15,6 +16,7 @@ using EarthModels
         @test length(PREM.r) == 13
         @test isanisotropic(PREM) == true
         @test vp(PREM, 0) ≈ 11.2622
+        @test hasattenuation(PREM)
         @test Qμ(PREM, 1000) ≈ 84.6
         @test moment_of_inertia(PREM)/(
             mass(PREM, surface_radius(PREM))*surface_radius(PREM)^2*1e6) ≈ 0.3308 atol=0.0001

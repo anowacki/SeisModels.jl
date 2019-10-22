@@ -1,4 +1,7 @@
 using Test
 
-include("earth_models_1d.jl")
-include("inbuilt_models.jl")
+@testset "All tests" begin
+    include("earth_models_1d.jl")
+    include("inbuilt_models.jl")
+    include("basic_properties.jl")
+end

@@ -75,7 +75,13 @@ julia> density(AK135, radius(AK135, 20))
 ```
 
 In the last example, we used the `radius` function to convert depth in the AK135 model
-to radius and calculate the density at 20 km depth.
+to radius and calculate the density at 20 km depth.  Some functions also accept the
+`depth` keyword argument to instead evaluate properties at a point below the surface:
+
+```julia
+julia> density(AK135, radius(AK135, 20)) == density(AK135, 20, depth=true)
+true
+```
 
 You can also evaluate values programmatically (i.e., where the parameter of
 interest is a variable) by using the exported `evaluate` function, and broadcast
@@ -101,10 +107,10 @@ does support reading and writing of
 ## Reference
 ### Exported types
 - `EarthModel`: Abstract supertype of all models
-- `EarthModel1D`: Abstract supertype of 1D models
-- `LinearLayeredModel`: 1D model with linearly-varying properties between node points
-- `PREMPolyModel`: 1D model defined by PREM-style polynomials (of arbitrary degree)
-- `SteppedLayeredModel`: 1D model with constant properties between node points
+  - `EarthModel1D`: Abstract supertype of 1D models
+    - `LinearLayeredModel`: 1D model with linearly-varying properties between node points
+    - `PREMPolyModel`: 1D model defined by PREM-style polynomials (of arbitrary degree)
+    - `SteppedLayeredModel`: 1D model with constant properties between node points
 
 ### Exported model instances
 - `AK135`
@@ -113,6 +119,7 @@ does support reading and writing of
 ### Exported functions
 #### Model properties
 - `depth`: Return depth in km given a radius and model
+- `hasattenuation`: Whether a model includes attenuation
 - `isanisotropic`: Whether a model is anisotropic
 - `radius`: Return radius in km given a depth and model
 - `surface_radius`: Radius in km of planet
