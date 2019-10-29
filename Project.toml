@@ -1,6 +1,6 @@
 name = "EarthModels"
 uuid = "aaeb1028-ebc9-11e8-11f3-65db3368bf88"
-authors = ["Andy Nowacki <andy.nowacki@bristol.ac.uk>"]
+authors = ["Andy Nowacki <a.nowacki@leeds.ac.uk>"]
 version = "0.2.0"
 
 [deps]
