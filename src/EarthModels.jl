@@ -77,10 +77,6 @@ export
     surface_mass,
     youngs_modulus,
 
-    # Models
-    AK135,
-    PREM,
-
     # IO
     read_mineos,
     write_mineos
@@ -100,12 +96,19 @@ include("basic_properties.jl")
 
 ## 1D models
 include("earth_models_1d.jl")
-# Predefined 1D models
-include("prem.jl")
-include("ak135.jl")
 
 ## IO
 include("io.jl")
+
+## Predefined models
+# Earth
+include("Earth/Earth.jl")
+using .Earth: AK135, PREM
+
+## Exported predefined models
+export 
+    AK135,
+    PREM
 
 ## Deprecated functions
 rho(m::EarthModel, args...; kwargs...) =
