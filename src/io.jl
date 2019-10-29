@@ -49,12 +49,12 @@ function read_mineos(file)
 end
 
 """
-    save_mineos(m::SteppedLayeredModel, file, freq=1.0, title="Model from EarthModels.jl")
+    save_mineos(m::SteppedLayeredModel, file, freq=1.0, title="Model from SeisModels.jl")
 
-Save an `EarthModel1D` as a tabular Mineos-format file.  Supply the reference
+Save an `SeisModel1D` as a tabular Mineos-format file.  Supply the reference
 frequency `freq` in Hz and a `title`.
 """
-function write_mineos(m::SteppedLayeredModel, file, freq=1.0, title="Model from EarthModels.jl")
+function write_mineos(m::SteppedLayeredModel, file, freq=1.0, title="Model from SeisModels.jl")
     length(title) > 80 &&
         @warn("Mineos model files can have titles only 80 characters long " *
               "('$title' is $(length(title)) characters)")
@@ -144,4 +144,3 @@ function voigt_velocities(vpv, vsv, vph, vsh, η)
     vs = sqrt(μ)
     vp, vs
 end
-    

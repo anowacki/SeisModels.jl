@@ -1,5 +1,5 @@
 """
-# EarthModels
+# SeisModels
 
 Give various physical properties of the interior of the Earth for a range of
 models.
@@ -34,14 +34,14 @@ Derived properties can be computed for all models:
 - PREM
 - AK135
 """
-module EarthModels
+module SeisModels
 
 import QuadGK: quadgk
 
 export
     # Model types
-    EarthModel,
-    EarthModel1D,
+    SeisModel,
+    SeisModel1D,
     LinearLayeredModel,
     PREMPolyModel,
     SteppedLayeredModel,
@@ -82,14 +82,14 @@ export
     write_mineos
 
 """
-Abstract supertype of all models of the Earth in the `EarthModels` module.
-All models should be a subtype of this or one of `EarthModel`'s abstract
+Abstract supertype of all models of the Earth in the `SeisModels` module.
+All models should be a subtype of this or one of `SeisModel`'s abstract
 subtypes.
 """
-abstract type EarthModel end
+abstract type SeisModel end
 
 # Allow models to be broadcasted as scalars
-Base.broadcastable(x::EarthModel) = Ref(x)
+Base.broadcastable(x::SeisModel) = Ref(x)
 
 ## Basic properties of models
 include("basic_properties.jl")
@@ -111,7 +111,7 @@ export
     PREM
 
 ## Deprecated functions
-rho(m::EarthModel, args...; kwargs...) =
+rho(m::SeisModel, args...; kwargs...) =
     (@warn("`rho` is deprecated; use `density` instead"); density(m, args...; kwargs...))
 export rho
 

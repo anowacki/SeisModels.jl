@@ -1,11 +1,11 @@
-# EarthModels.jl
+# SeisModels.jl
 
-[![Build Status](https://travis-ci.org/anowacki/EarthModels.jl.svg?branch=master)](https://travis-ci.org/anowacki/EarthModels.jl)
+[![Build Status](https://travis-ci.org/anowacki/SeisModels.jl.svg?branch=master)](https://travis-ci.org/anowacki/SeisModels.jl)
 [![Build status](https://ci.appveyor.com/api/projects/status/x74sjgeor8segcmc?svg=true)](https://ci.appveyor.com/project/AndyNowacki/earthmodels-jl)
-[![Coverage Status](https://coveralls.io/repos/github/anowacki/EarthModels.jl/badge.svg?branch=master)](https://coveralls.io/github/anowacki/EarthModels.jl?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/anowacki/SeisModels.jl/badge.svg?branch=master)](https://coveralls.io/github/anowacki/SeisModels.jl?branch=master)
 
 
-## What is EarthModels.jl?
+## What is SeisModels.jl?
 A [Julia](http://julialang.org) package for dealing with models of the Earth's
 (and other quasi-1D planets') seismic properties.
 
@@ -17,29 +17,29 @@ Built in models are PREM and AK135.
 
 
 ## How to install
-Although not registered as an official package, EarthModels.jl can be added to your
+Although not registered as an official package, SeisModels.jl can be added to your
 Julia install like so:
 
 ```julia
-julia> import Pkg; Pkg.add("https://github.com/anowacki/EarthModels.jl")
+julia> import Pkg; Pkg.add("https://github.com/anowacki/SeisModels.jl")
 ```
 
-(On version 0.6 of Julia, instead use the command `Pkg.clone("https://github.com/anowacki/EarthModels.jl")`.)
+(On version 0.6 of Julia, instead use the command `Pkg.clone("https://github.com/anowacki/SeisModels.jl")`.)
 
 
 ## How to use
 ### Model types
-The module defines the EarthModel type and subtypes of this specify the kind of
+The module defines the SeisModel type and subtypes of this specify the kind of
 model (i.e., symmetry, nature of basis function, etc.).
 
 ```julia
-julia> using EarthModels
+julia> using SeisModels
 
-julia> subtypes(EarthModel)
+julia> subtypes(SeisModel)
 1-element Array{Any,1}:
- EarthModel1D
+ SeisModel1D
 
-julia> subtypes(EarthModel1D)
+julia> subtypes(SeisModel1D)
 3-element Array{Any,1}:
  LinearLayeredModel
  PREMPolyModel
@@ -98,7 +98,7 @@ julia> evaluate.(AK135, parameters, 3680)
 ```
 
 ### Model input and output
-Support for reading and writing model files is currently limited.  However, EarthModels
+Support for reading and writing model files is currently limited.  However, SeisModels
 does support reading and writing of
 [Mineos](https://geodynamics.org/cig/software/mineos/)-format &lsquo;tabular&rsquo; models
 (i.e., `SteppedLayeredModel`s) via the `read_mineos` and `write_mineos` functions.
@@ -106,8 +106,8 @@ does support reading and writing of
 
 ## Reference
 ### Exported types
-- `EarthModel`: Abstract supertype of all models
-  - `EarthModel1D`: Abstract supertype of 1D models
+- `SeisModel`: Abstract supertype of all models
+  - `SeisModel1D`: Abstract supertype of 1D models
     - `LinearLayeredModel`: 1D model with linearly-varying properties between node points
     - `PREMPolyModel`: 1D model defined by PREM-style polynomials (of arbitrary degree)
     - `SteppedLayeredModel`: 1D model with constant properties between node points
@@ -161,7 +161,7 @@ prompt, and type the name of the function:
 help?> PREMPolyModel
 search: PREMPolyModel
 
-  PREMPolyModel <: EarthModel1D
+  PREMPolyModel <: SeisModel1D
 
   Type describing the Earth as a set of layers within which properties vary according to a set of
   polynomials.

@@ -5,7 +5,7 @@ This module defines seismic models for the Earth.
 """
 module Earth
 
-using ..EarthModels
+using ..SeisModels
 
 export AK135, PREM
 

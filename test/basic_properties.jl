@@ -1,5 +1,5 @@
 using Test
-using EarthModels
+using SeisModels
 
 @testset "Basic properties" begin
     let m = SteppedLayeredModel(1, 2, [0.5, 1], [1, 2], [3, 4], [5, 6], false,

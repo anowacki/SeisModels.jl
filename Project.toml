@@ -1,5 +1,5 @@
-name = "EarthModels"
-uuid = "aaeb1028-ebc9-11e8-11f3-65db3368bf88"
+name = "SeisModels"
+uuid = "47bbc3d6-959e-5592-a00a-d17660d07a0f"
 authors = ["Andy Nowacki <a.nowacki@leeds.ac.uk>"]
 version = "0.2.0"
 

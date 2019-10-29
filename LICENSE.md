@@ -1,4 +1,4 @@
-The Julia CIJ module is licensed under under and MIT-style license:
+The SeisModels module is licensed under under the MIT license:
 
 Copyright (c) 2015-6 Andy Nowacki (a.nowacki@leeds.ac.uk)
 

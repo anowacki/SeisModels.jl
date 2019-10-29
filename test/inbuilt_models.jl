@@ -1,5 +1,5 @@
 using Test
-using EarthModels
+using SeisModels
 
 @testset "Inbuilt models" begin
     @testset "AK135" begin

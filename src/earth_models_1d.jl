@@ -1,25 +1,25 @@
-#==============
-1D Earth models
-==============#
+#================
+1D seismic models
+================#
 """
-Abstract type for radially-symmetric models of the Earth.  1D Earth models should
+Abstract type for radially-symmetric models of a planet.  1D seismic models should
 be subtypes of this.
 """
-abstract type EarthModel1D <: EarthModel end
+abstract type SeisModel1D <: SeisModel end
 
-const model_variables_EarthModel1D = (:vp, :vs, :density, :vph, :vpv, :vsh, :vsv,
+const model_variables_SeisModel1D = (:vp, :vs, :density, :vph, :vpv, :vsh, :vsv,
     :eta, :Qμ, :Qκ)
-const model_names_EarthModel1D = ("isotropic average Vp", "isotropic average Vs",
+const model_names_SeisModel1D = ("isotropic average Vp", "isotropic average Vs",
     "density", "Vph", "Vpv", "Vsh", "Vsv", "η", "Qμ", "Qκ")
-const model_units_EarthModel1D = (" (km/s)", " (km/s)", " (g/cm^3)", " (km/s)",
+const model_units_SeisModel1D = (" (km/s)", " (km/s)", " (g/cm^3)", " (km/s)",
     " (km/s)", " (km/s)", " (km/s)", "", "", "")
 
 """
-    findlayer(m::EarthModel1D, r) -> layer_index
+    findlayer(m::SeisModel1D, r) -> layer_index
 
-Return the layer index in which radius `r` km is located in the EarthModel1D `m`.
+Return the layer index in which radius `r` km is located in the SeisModel1D `m`.
 """
-function findlayer(m::EarthModel1D, r::Real)
+function findlayer(m::SeisModel1D, r::Real)
     r < 0. && throw(DomainError(r, "radius cannot be negative"))
     r > m.a && throw(DomainError(r, "radius is greater than Earth radius for model ($(m.a) km)"))
     for i in 1:length(m.r)
@@ -30,7 +30,7 @@ end
 
 
 """
-    PREMPolyModel <: EarthModel1D
+    PREMPolyModel <: SeisModel1D
 
 Type describing the Earth as a set of layers within which properties vary
 according to a set of polynomials.
@@ -43,7 +43,7 @@ at a radius of `r` km, the expression is:
 
     val_x = x[i,1] + (r/a)*x[i,2] + (r/a)^2*x[i,3] ... (r/a)^order*x[i,order+1]
 """
-struct PREMPolyModel <: EarthModel1D
+struct PREMPolyModel <: SeisModel1D
     "Earth radius in km"
     a :: Float64
     "Number of distinct layers"
@@ -69,10 +69,10 @@ end
 
 # Evaluation routines--all documented here
 # TODO: Use Horner's method à la Base.@evalpoly
-for (sym, name, unit) in zip(model_variables_EarthModel1D, model_names_EarthModel1D, model_units_EarthModel1D)
+for (sym, name, unit) in zip(model_variables_SeisModel1D, model_names_SeisModel1D, model_units_SeisModel1D)
     @eval begin
         """
-            $(split(string($sym), ".")[end])(m::EarthModel1D, r; depth=false) -> $($name)
+            $(split(string($sym), ".")[end])(m::SeisModel1D, r; depth=false) -> $($name)
         
         Return the value of $($name)$($unit) for model `m` at radius `r` km.
         
@@ -97,7 +97,7 @@ const Qmu = Qμ
 const Qkappa = Qκ
 
 """
-    evaluate(m::EarthModel1D, field::Symbol, r) -> vals
+    evaluate(m::SeisModel1D, field::Symbol, r) -> vals
 
 Evaluate the model `m` at radius `r` km for the different property/ies in `field`,
 returning a scalar for scalar input, and an array for array input.
@@ -118,12 +118,12 @@ end
 
 
 """
-    SteppedLayeredModel <: EarthModel1D
+    SteppedLayeredModel <: SeisModel1D
 
 A `SteppedLayeredModel` contains `n` layers with maximum radius `r` km,
 each with a constant velocity.
 """
-struct SteppedLayeredModel <: EarthModel1D
+struct SteppedLayeredModel <: SeisModel1D
     "Earth radius in km"
     a :: Float64
     "Number of layers"
@@ -147,7 +147,7 @@ struct SteppedLayeredModel <: EarthModel1D
     Qκ :: Vector{Float64}
 end
 
-for sym in model_variables_EarthModel1D
+for sym in model_variables_SeisModel1D
     @eval function ($sym)(m::SteppedLayeredModel, r::Real; depth::Bool=false)
         length(m.$sym) > 0 ||
             throw(ArgumentError("'$split(string($sym), ".")[end]' not defined for model"))
@@ -165,14 +165,14 @@ end
 
 
 """
-    LinearLayeredModel <: EarthModel1D
+    LinearLayeredModel <: SeisModel1D
 
 A `LinearLayeredModel` contains `n` points at which velocities are defined, with
 linear interpolation between them.  Hence there are `n - 1` layers.
 
 Discontinuities are represented by two layers with the same radii.
 """
-struct LinearLayeredModel <: EarthModel1D
+struct LinearLayeredModel <: SeisModel1D
     "Earth radius in km"
     a :: Float64
     "Number of layers"
@@ -205,7 +205,7 @@ function findlayer(m::LinearLayeredModel, r::Real)
     return length(m.r) - 1
 end
 
-for sym in model_variables_EarthModel1D
+for sym in model_variables_SeisModel1D
     @eval function ($sym)(m::LinearLayeredModel, r::Real; depth::Bool=false)
         length(m.$sym) > 0 ||
             throw(ArgumentError("'$(split(string($sym), ".")[end])' not defined for model"))
@@ -232,22 +232,22 @@ end
 
 ## Derived quantities
 """
-    bulk_modulus(m::EarthModel1D, r) -> K
+    bulk_modulus(m::SeisModel1D, r) -> K
 
 Return the bulk modulus `K` in GPa at radius `r` in the model `m`.
 """
-bulk_modulus(m::EarthModel1D, r) = density(m, r)*vp(m, r)^2 - 4/3*shear_modulus(m, r)
+bulk_modulus(m::SeisModel1D, r) = density(m, r)*vp(m, r)^2 - 4/3*shear_modulus(m, r)
 
 const NewtonG = 6.67428e-11
 """
-    gravity(m::EarthModel1D, r) -> g
+    gravity(m::SeisModel1D, r) -> g
 
 Return the acceleration due to gravity, `g`, in m/s^2 at radius `r` km.
 """
-gravity(m::EarthModel1D, r) = (r == 0) ? 0. : NewtonG*mass(m, r)/(r*1.e3)^2
+gravity(m::SeisModel1D, r) = (r == 0) ? 0. : NewtonG*mass(m, r)/(r*1.e3)^2
 
 """
-    mass(m::EarthModel1D, r) -> mass
+    mass(m::SeisModel1D, r) -> mass
 
 Return the mass in kg between the centre of the model and the radius `r` km.
 """
@@ -302,15 +302,15 @@ function mass(m::LinearLayeredModel, r)
 end
 
 """
-    pressure(m::EarthModel1D, r) -> p
+    pressure(m::SeisModel1D, r) -> p
 
 Return the pressure `p` in Pa at radius `r` km.
 """
-function pressure(m::EarthModel1D, r)
+function pressure(m::SeisModel1D, r)
     f(r) = pressure_integration_func(m, r)
     1.e3*quadgk(f, r, m.a)[1]
 end
-pressure_integration_func(m::EarthModel1D, r) = 1.e3*density(m, r)*gravity(m, r)
+pressure_integration_func(m::SeisModel1D, r) = 1.e3*density(m, r)*gravity(m, r)
 
 """
     poissons_ratio(m, r) -> ν
@@ -318,33 +318,33 @@ pressure_integration_func(m::EarthModel1D, r) = 1.e3*density(m, r)*gravity(m, r)
 Return the Poisson's ratio for the model `m` given a radius `r` in km.
 The calculation uses the isotropic average velocities at `r`.
 """
-function poissons_ratio(m::EarthModel1D, r)
+function poissons_ratio(m::SeisModel1D, r)
     G = shear_modulus(m, r)
     K = bulk_modulus(m, r)
     (3K - 2G)/(6K + 2G)
 end
 
 """
-    shear_modulus(m::EarthModel1D, r) -> μ
+    shear_modulus(m::SeisModel1D, r) -> μ
 
 Return the shear modulus `μ` (often also called G) in GPa at radius `r` in the
 model `m`.
 """
-shear_modulus(m::EarthModel1D, r) = vs(m, r)^2*density(m, r)
+shear_modulus(m::SeisModel1D, r) = vs(m, r)^2*density(m, r)
 
 """
-    surface_mass(m::EarthModel1D, r) -> mass
+    surface_mass(m::SeisModel1D, r) -> mass
 
 Return the mass in kg betwen radius `r` km and the surface.
 """
-surface_mass(m::EarthModel1D, r) = mass(m, m.a) - mass(m, r)
+surface_mass(m::SeisModel1D, r) = mass(m, m.a) - mass(m, r)
 
 """
     youngs_modulus(m, r) -> E
 
 Return the Young's modulus `E` in GPa for the model `m` given a radius `r` in km.
 """
-youngs_modulus(m::EarthModel1D, r) = 2*shear_modulus(m, r)*(1 + poissons_ratio(m, r))
+youngs_modulus(m::SeisModel1D, r) = 2*shear_modulus(m, r)*(1 + poissons_ratio(m, r))
 
 
 """
@@ -353,5 +353,5 @@ youngs_modulus(m::EarthModel1D, r) = 2*shear_modulus(m, r)*(1 + poissons_ratio(m
 Return the moment of interia `I` in kg m² for the model `m` between radii `r0`
 and `r1` in km.
 """
-moment_of_inertia(m::EarthModel1D, r0=0, r1=surface_radius(m)) =
+moment_of_inertia(m::SeisModel1D, r0=0, r1=surface_radius(m)) =
     8/3*π*quadgk(r->1e3*density(m, r/1e3)*r^4, r0*1e3, r1*1e3)[1]
