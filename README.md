@@ -13,7 +13,8 @@ Currently, only three kinds of one-dimensional models are supported, but all mod
 parameterisations and models are acceptable for inclusion.  Contributions
 are welcome.
 
-Built in models are PREM and AK135.
+Built in models are ak135, PREM, iasp91, and Weber et al. (Science, 2011)'s
+model of the moon.
 
 
 ## How to install
@@ -21,10 +22,8 @@ Although not registered as an official package, SeisModels.jl can be added to yo
 Julia install like so:
 
 ```julia
-julia> import Pkg; Pkg.add("https://github.com/anowacki/SeisModels.jl")
+julia> import Pkg; Pkg.pkg"add https://github.com/anowacki/SeisModels.jl"
 ```
-
-(On version 0.6 of Julia, instead use the command `Pkg.clone("https://github.com/anowacki/SeisModels.jl")`.)
 
 
 ## How to use
@@ -113,13 +112,18 @@ does support reading and writing of
     - `SteppedLayeredModel`: 1D model with constant properties between node points
 
 ### Exported model instances
-- `AK135`
-- `PREM`
+- Earth
+  - `AK135`
+  - `IASP91`
+  - `PREM`
+- Moon
+  - `MOON_WEBER_2011`
 
 ### Exported functions
 #### Model properties
 - `depth`: Return depth in km given a radius and model
 - `hasattenuation`: Whether a model includes attenuation
+- `hasdensity`: Whether a model includes density
 - `isanisotropic`: Whether a model is anisotropic
 - `radius`: Return radius in km given a depth and model
 - `surface_radius`: Radius in km of planet
@@ -138,13 +142,13 @@ does support reading and writing of
 - `Qκ`, `Qkappa`: Bulk quality factor
 
 #### Derived properties
-- `bulk_modulus`: Bulk modulus (K) in Pa
+- `bulk_modulus`: Bulk modulus (_K_) in Pa
 - `gravity`: Acceleration due to gravity in m/s^2 at a given radius
 - `mass`: Mass in kg from centre of model to a given radius
 - `moment_of_inertia`: MOI in kg m^2
 - `poissons_ratio`: Poisson's ratio
 - `pressure`: Pressure in Pa
-- `shear_modulus`: Shear modulus (G) in Pa
+- `shear_modulus`: Shear modulus (_G_) in Pa
 - `surface_mass`: Mass between two radii
 - `youngs_modulus`: Young's modulus in Pa
 
