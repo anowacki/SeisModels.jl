@@ -281,7 +281,7 @@ function mass(m::SteppedLayeredModel, r)
     for i in 1:l
         R0 = i == 1 ? 0. : m.r[i-1]*1.e3
         R = i < l ? m.r[i]*1.e3 : r
-        M += m.density[i]*(R^3 - R0^3)
+        M += 1.e3*m.density[i]*(R^3 - R0^3)
     end
     4/3*π*M
 end
