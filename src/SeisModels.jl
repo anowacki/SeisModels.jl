@@ -4,36 +4,58 @@
 Give various physical properties of the interior of the Earth for a range of
 models.
 
+### Units
+
+Throughout, the module uses the following unit conventions:
+
+- Distances are in km
+- Velocities are in km/s
+- Densities are in g/cm³
+- Accelerations are in m/s²
+- Pressures (from `pressure`) are in Pa
+- Moduli (e.g., from `youngs_modulus`) are in GPa
+- Masses in are in kg
+
 ### Physical properties
 
 All models should have:
 
 - P-wave velocity (accessed with the `vp` function) in km/s
 - S-wave velocity (`vs`) in km/s
-- Density (`density`) in g/cm^3
 - (Average) Earth surface radius (`surface_radius`) in km
 
 Models may also provide:
 
-- VPV, VPH, VSV and VSH for radially-anistropic models (`vpv`, etc.) in km/s
-- Radial anisotropy parameter η (`eta`)
-- Shear wave quality factor (`Qμ`)
-- Bulk sound quality factor (`Qκ`)
+- Density (`density`) in g/cm^3
+- Radial anisotropy:
+  - VPV, VPH, VSV and VSH for radially-anistropic models (`vpv`, etc.) in km/s
+  - Radial anisotropy parameter η (`eta`)
+- Attenuation:
+  - Shear wave quality factor (`Qμ`)
+  - Bulk sound quality factor (`Qκ`)
 
-Derived properties can be computed for all models:
+Derived properties for all models:
+
+- Radius from centre of Earth to a given depth (`depth`) in km
+- Bulk and shear moduli (`bulk_modulus`, `shear_modulus`) in GPa
+- Young's modulus (`youngs_modulus`) in GPa
+- Poisson's ratio
+
+Derived properties can be computed for all models with density:
 
 - Mass up to radius r (`mass`) in kg
 - Mass from radius r to the surface (`surface_mass`) in kg
 - Pressure (`pressure`) in Pa
 - Acceleration due to gravity g (`gravity`) in m/s^2
-- Bulk and shear module (`bulk_modulus`, `shear_modulus`) in GPa
-- Radius from centre of Earth to a given depth (`depth`) in km
 
-### Currently implemented models
+### Inbuilt models
 
-- PREM
-- IASP91
-- AK135
+- Earth
+  - `PREM`
+  - `IASP91`
+  - `AK135`
+- Moon
+  - `MOON_WEBER_2011`
 """
 module SeisModels
 
@@ -114,10 +136,5 @@ for planet in (:Earth, :Moon)
         end
     end
 end
-
-## Deprecated functions
-rho(m::SeisModel, args...; kwargs...) =
-    (@warn("`rho` is deprecated; use `density` instead"); density(m, args...; kwargs...))
-export rho
 
 end # module

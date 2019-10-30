@@ -1,7 +1,7 @@
 name = "SeisModels"
 uuid = "47bbc3d6-959e-5592-a00a-d17660d07a0f"
 authors = ["Andy Nowacki <a.nowacki@leeds.ac.uk>"]
-version = "0.2.0"
+version = "0.3.0"
 
 [deps]
 QuadGK = "1fd47b50-473d-5c70-9696-f719f8f3bcdc"
