@@ -2,19 +2,27 @@ using Test
 using SeisModels
 
 @testset "Inbuilt models" begin
-    @testset "AK135" begin
+    @testset "ak135" begin
         @test surface_radius(AK135) == 6371.0
         @test length(AK135.r) == 136
         @test vp(AK135, 0) ≈ 11.2622
-        @test isanisotropic(AK135) == false
+        @test !isanisotropic(AK135)
         @test !hasattenuation(AK135)
         @test_throws ArgumentError Qμ(AK135, 1000)
+    end
+
+    @testset "iasp91" begin
+        @test surface_radius(IASP91) == 6371.0
+        @test length(IASP91.r) == 11
+        @test !isanisotropic(IASP91)
+        @test !hasdensity(IASP91)
+        @test !hasattenuation(IASP91)
     end
 
     @testset "PREM" begin
         @test surface_radius(PREM) == 6371.0
         @test length(PREM.r) == 13
-        @test isanisotropic(PREM) == true
+        @test isanisotropic(PREM)
         @test vp(PREM, 0) ≈ 11.2622
         @test hasattenuation(PREM)
         @test Qμ(PREM, 1000) ≈ 84.6

@@ -32,6 +32,7 @@ Derived properties can be computed for all models:
 ### Currently implemented models
 
 - PREM
+- IASP91
 - AK135
 """
 module SeisModels
@@ -102,14 +103,17 @@ include("earth_models_1d.jl")
 include("io.jl")
 
 ## Predefined models
-# Earth
-include("Earth/Earth.jl")
-using .Earth: AK135, PREM
-
-## Exported predefined models
-export 
-    AK135,
-    PREM
+# For each `planet`, models are defined in a module in "$(planet)/$(planet).jl".
+# Each module must include a list of model symbols in ALL_MODELS.
+for planet in (:Earth,)
+    include(joinpath(@__DIR__, string(planet), string(planet, ".jl")))
+    for model in getfield(SeisModels, planet).ALL_MODELS
+        @eval begin
+            using .$(planet): $(model)
+            export $(model)
+        end
+    end
+end
 
 ## Deprecated functions
 rho(m::SeisModel, args...; kwargs...) =

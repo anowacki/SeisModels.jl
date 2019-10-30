@@ -7,9 +7,17 @@ module Earth
 
 using ..SeisModels
 
-export AK135, PREM
+"""
+	ALL_MODELS
+
+List of Earth model instances as `Symbol`s.
+
+If adding new inbuilt Earth models, append the name of the new model to this list
+"""
+const ALL_MODELS = (:AK135, :IASP91, :PREM)
 
 include("ak135.jl")
 include("prem.jl")
+include("iasp91.jl")
 
 end # module
