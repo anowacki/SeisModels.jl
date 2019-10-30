@@ -9,10 +9,12 @@ using SeisModels
         @test radius(m, 0.25) == 0.75
         @test depth(m, 0.25) == 0.75
         @test hasattenuation(m)
+        @test hasdensity(m)
     end
     let a = 1, n = 2, arr = rand(2), m = SteppedLayeredModel(a, n, [0.005 + 0.99rand(), 1],
-            arr, arr, arr, true, arr, arr, arr, arr, arr, false, [], [])
+            arr, arr, [], true, arr, arr, arr, arr, arr, false, [], [])
         @test isanisotropic(m)
         @test !hasattenuation(m)
+        @test !hasdensity(m)
     end
 end

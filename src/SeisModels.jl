@@ -49,6 +49,7 @@ export
     # Model properties
     depth,
     hasattenuation,
+    hasdensity,
     isanisotropic,
     radius,
     surface_radius,

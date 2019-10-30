@@ -16,6 +16,13 @@ Return `true` if the model `m` includes attenuation and `false` otherwise.
 hasattenuation(m::SeisModel) = m.attenuation
 
 """
+	hasdensity(m) -> ::Bool
+
+Return `true` if density is defined for model `m`, and `false` otherwise.
+"""
+hasdensity(m::SeisModel) = !isempty(m.density)
+
+"""
     isanisotropic(m) -> ::Bool
 
 Return `true` if the model `m` is anisotropic and `false` otherwise.
