@@ -2,6 +2,11 @@ using Test
 using SeisModels
 
 @testset "1D models" begin
+    @testset "Broadcasting" begin
+        @test vp.((PREM, AK135), 1000) == (11.10541122721928, 11.103425443786982)
+        @test vs.(PREM, 0:3) ≈ [3.6678, 3.667799890427708, 3.6677995617108317, 3.6677990138493715]
+    end
+
     @testset "Find layer" begin
         @test_throws DomainError SeisModels.findlayer(PREM, -1)
         @test_throws DomainError SeisModels.findlayer(PREM, 1e6)
@@ -39,5 +44,7 @@ using SeisModels
                 @test poissons_ratio(m, 0) == 0.4666666666666667
             end
         end
+
+        # TODO: Add tests for LinearLayeredModel and PREMPolyModel
     end
 end
