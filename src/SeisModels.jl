@@ -119,7 +119,7 @@ Base.broadcastable(x::SeisModel) = Ref(x)
 include("basic_properties.jl")
 
 ## 1D models
-include("earth_models_1d.jl")
+include("models_1d.jl")
 
 ## IO
 include("io.jl")
