@@ -42,6 +42,11 @@ using SeisModels
                 @test shear_modulus(m, 1) == 3e3*1e3^2/1e9
                 @test bulk_modulus(m, 0.5) == (3e3*1e3^2/1e9 - 4/3*shear_modulus(m, 0.5))
                 @test poissons_ratio(m, 0) == 0.4666666666666667
+                # Evaluation via property symbol
+                for (f, sym) in zip((vp, vs, density, vph, vpv, vsh, vsv, eta, Qμ,  Qκ),
+                    (:vp, :vs, :density, :vph, :vpv, :vsh, :vsv, :eta, :Qμ,  :Qκ))
+                    @test f(m, 0.9) == evaluate(m, sym, 0.9)
+                end
             end
         end
 
