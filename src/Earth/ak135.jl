@@ -1,5 +1,7 @@
 """
-# AK135
+# `AK135`
+
+1-D layered model of the Earth, containing density.
 
 ## Reference
 

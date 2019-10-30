@@ -1,5 +1,7 @@
 """
-# PREM
+# `PREM`
+
+1-D model containing density, radial anisotropy and attenuation.
 
 ## Reference
 
