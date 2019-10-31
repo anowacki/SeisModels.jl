@@ -52,4 +52,28 @@ using SeisModels
 
         # TODO: Add tests for LinearLayeredModel and PREMPolyModel
     end
+
+    # Test for equivalence of depth versions of functions
+    @testset "Depth" begin
+        let n = 5, radii = sort(rand(n)), R = radii[end],
+                (Vp, Vs, rho, Vpv, Vph, Vsv, Vsh, Eta, Qkappa, Qmu) = rand.(repeat([n], 10))
+            for model_type in (SteppedLayeredModel, LinearLayeredModel, PREMPolyModel)
+                m = if model_type <: PREMPolyModel
+                    model_type(R, n, radii, Vp', Vs', rho', true, Vpv', Vph', Vsv', Vsh', Eta',
+                        true, Qkappa', Qmu')
+                else
+                    model_type(R, n, radii, Vp, Vs, rho, true, Vpv, Vph, Vsv, Vsh, Eta,
+                        true, Qkappa, Qmu)
+                end
+                r = R*0.99*rand()
+                z = R - r
+                for func in (vp, vs, density, vpv, vph, vsv, vsh, eta, Qκ, Qμ,
+                        pressure, bulk_modulus, shear_modulus,
+                        youngs_modulus, poissons_ratio, mass, surface_mass)
+                    @test func(m, z, depth=true) ≈ func(m, r)
+                end
+                @test evaluate(m, :vp, z, depth=true) ≈ evaluate(m, :vp, r)
+            end
+        end
+    end
 end

@@ -97,10 +97,12 @@ const Qmu = Qμ
 const Qkappa = Qκ
 
 """
-    evaluate(m::SeisModel1D, field::Symbol, r) -> vals
+    evaluate(m::SeisModel1D, field::Symbol, r; depth=false) -> vals
 
 Evaluate the model `m` at radius `r` km for the different property/ies in `field`,
 returning a scalar for scalar input, and an array for array input.
+
+If `depth` is `true`, `r` is treated as a depth in km instead.
 """
 function evaluate(m::PREMPolyModel, field::Symbol, r; depth::Bool=false)
     y = getfield(m, field)
@@ -232,11 +234,16 @@ end
 
 ## Derived quantities
 """
-    bulk_modulus(m::SeisModel1D, r) -> K
+    bulk_modulus(m::SeisModel1D, r; depth=false) -> K
 
-Return the bulk modulus `K` in GPa at radius `r` in the model `m`.
+Return the bulk modulus `K` in GPa at radius `r` km in the model `m`.
+
+If `depth` is `true`, `r` is treated as a depth in km instead.
 """
-bulk_modulus(m::SeisModel1D, r) = density(m, r)*vp(m, r)^2 - 4/3*shear_modulus(m, r)
+function bulk_modulus(m::SeisModel1D, r; depth::Bool=false)
+    depth && (r = radius(m, r))
+    density(m, r)*vp(m, r)^2 - 4/3*shear_modulus(m, r)
+end
 
 const NewtonG = 6.67428e-11
 """
@@ -251,8 +258,9 @@ gravity(m::SeisModel1D, r) = (r == 0) ? 0. : NewtonG*mass(m, r)/(r*1.e3)^2
 
 Return the mass in kg between the centre of the model and the radius `r` km.
 """
-function mass(m::PREMPolyModel, r)
-	l = findlayer(m, r)
+function mass(m::PREMPolyModel, r; depth::Bool=false)
+	depth && (r = radius(m, r))
+    l = findlayer(m, r)
 	r *= 1.e3 # SI
 	M = 0.
 	for i = 1:l
@@ -274,7 +282,8 @@ function mass(m::PREMPolyModel, r)
 	4*π*M
 end
 
-function mass(m::SteppedLayeredModel, r)
+function mass(m::SteppedLayeredModel, r; depth::Bool=false)
+    depth && (r = radius(m, r))
     l = findlayer(m, r)
     r *= 1.e3
     M = 0.
@@ -286,7 +295,8 @@ function mass(m::SteppedLayeredModel, r)
     4/3*π*M
 end
 
-function mass(m::LinearLayeredModel, r)
+function mass(m::LinearLayeredModel, r; depth::Bool=false)
+    depth && (r = radius(m, r))
     l = findlayer(m, r)
     r *= 1.e3
     M = 0.
@@ -302,50 +312,70 @@ function mass(m::LinearLayeredModel, r)
 end
 
 """
-    pressure(m::SeisModel1D, r) -> p
+    pressure(m::SeisModel1D, r; depth=false) -> p
 
 Return the pressure `p` in Pa at radius `r` km.
+
+If `depth` is `true`, `r` is treated as a depth in km instead.
 """
-function pressure(m::SeisModel1D, r)
+function pressure(m::SeisModel1D, r; depth::Bool=false)
+    depth && (r = radius(m, r))
     f(r) = pressure_integration_func(m, r)
     1.e3*quadgk(f, r, m.a)[1]
 end
 pressure_integration_func(m::SeisModel1D, r) = 1.e3*density(m, r)*gravity(m, r)
 
 """
-    poissons_ratio(m, r) -> ν
+    poissons_ratio(m, r; depth=false) -> ν
 
 Return the Poisson's ratio for the model `m` given a radius `r` in km.
 The calculation uses the isotropic average velocities at `r`.
+
+If `depth` is `true`, `r` is treated as a depth in km instead.
 """
-function poissons_ratio(m::SeisModel1D, r)
+function poissons_ratio(m::SeisModel1D, r; depth::Bool=false)
+    depth && (r = radius(m, r))
     G = shear_modulus(m, r)
     K = bulk_modulus(m, r)
     (3K - 2G)/(6K + 2G)
 end
 
 """
-    shear_modulus(m::SeisModel1D, r) -> μ
+    shear_modulus(m::SeisModel1D, r; depth=false) -> μ
 
 Return the shear modulus `μ` (often also called G) in GPa at radius `r` in the
 model `m`.
+
+If `depth` is `true`, `r` is treated as a depth in km instead.
 """
-shear_modulus(m::SeisModel1D, r) = vs(m, r)^2*density(m, r)
+function shear_modulus(m::SeisModel1D, r; depth::Bool=false)
+    depth && (r = radius(m, r))
+    vs(m, r)^2*density(m, r)
+end
 
 """
-    surface_mass(m::SeisModel1D, r) -> mass
+    surface_mass(m::SeisModel1D, r; depth=false) -> mass
 
 Return the mass in kg betwen radius `r` km and the surface.
+
+If `depth` is `true`, `r` is treated as a depth in km instead.
 """
-surface_mass(m::SeisModel1D, r) = mass(m, m.a) - mass(m, r)
+function surface_mass(m::SeisModel1D, r; depth::Bool=false)
+    depth && (r = radius(m, r))
+    mass(m, m.a) - mass(m, r)
+end
 
 """
-    youngs_modulus(m, r) -> E
+    youngs_modulus(m, r; depth=false) -> E
 
 Return the Young's modulus `E` in GPa for the model `m` given a radius `r` in km.
-"""
-youngs_modulus(m::SeisModel1D, r) = 2*shear_modulus(m, r)*(1 + poissons_ratio(m, r))
 
+If `depth` is `true`, `r` is treated as a depth in km instead.
+"""
+function youngs_modulus(m::SeisModel1D, r; depth::Bool=false)
+    depth && (r = radius(m, r))
+    2*shear_modulus(m, r)*(1 + poissons_ratio(m, r))
+end
 
 """
     moment_of_inertia(m, r0=0, r1=surface_radius(m)) -> I
