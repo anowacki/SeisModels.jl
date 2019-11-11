@@ -5,11 +5,12 @@
 
 Read a `SteppedLayeredModel` in Mineos tabular format, which contains:
 
-Line 1: Title
-Line 2: anisotropy flag (0=false, 1=true), referencefrequency (Hz), tabular format flag (1=true)
-Line 3: number of layers, inner core boundary index, core mantle boundary index
-Lines 4+: radius (m), density (kg/m³), Vpv (m/s), Vsv (m/s), Qκ, Qμ, Vph (m/s),
-          Vsh (m/s), η
+- Line 1: Title
+- Line 2: anisotropy flag (0=false, 1=true), reference frequency (Hz), tabular format
+  flag (1=true)
+- Line 3: number of layers, inner core boundary index, core mantle boundary index
+- Lines 4+: radius (m), density (kg/m³), Vpv (m/s), Vsv (m/s), Qκ, Qμ, Vph (m/s),
+            Vsh (m/s), η
 
 ### References:
 
@@ -49,7 +50,7 @@ function read_mineos(file)
 end
 
 """
-    save_mineos(m::SteppedLayeredModel, file, freq=1.0, title="Model from SeisModels.jl")
+    write_mineos(m::SteppedLayeredModel, file, freq=1.0, title="Model from SeisModels.jl")
 
 Save an `SeisModel1D` as a tabular Mineos-format file.  Supply the reference
 frequency `freq` in Hz and a `title`.
@@ -58,7 +59,7 @@ function write_mineos(m::SteppedLayeredModel, file, freq=1.0, title="Model from 
     length(title) > 80 &&
         @warn("Mineos model files can have titles only 80 characters long " *
               "('$title' is $(length(title)) characters)")
-    ifanis = m.aniso ? 1 : 0
+    ifanis = isanisotropic(m) ? 1 : 0
     tref = freq
     ifdeck = 1
     N = m.n
@@ -72,7 +73,7 @@ function write_mineos(m::SteppedLayeredModel, file, freq=1.0, title="Model from 
         vsh = vsv = vs
         eta = ones(m.n)
     end
-    if m.attenuation
+    if hasattenuation(m)
         Qμ, Qκ = m.Qμ, m.Qκ
     else
         Qμ = Qκ = zeros(m.n)
