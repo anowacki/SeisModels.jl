@@ -20,6 +20,8 @@ jobs:
     - stage: "Documentation"
       julia: 1.2
       os: linux
+      env:
+        - GKSwstype=nul
       script:
         - julia --project=docs/ -e 'using Pkg; Pkg.develop(PackageSpec(path=pwd()));
                                                Pkg.instantiate()'
@@ -27,3 +29,4 @@ jobs:
       after_success: skip
 
 coveralls: true
+
