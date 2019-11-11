@@ -254,9 +254,11 @@ Return the acceleration due to gravity, `g`, in m/s^2 at radius `r` km.
 gravity(m::SeisModel1D, r) = (r == 0) ? 0. : NewtonG*mass(m, r)/(r*1.e3)^2
 
 """
-    mass(m::SeisModel1D, r) -> mass
+    mass(m::SeisModel1D, r; depth=false) -> mass
 
 Return the mass in kg between the centre of the model and the radius `r` km.
+
+If `depth` is `true`, `r` is treated as a depth in km instead.
 """
 function mass(m::PREMPolyModel, r; depth::Bool=false)
 	depth && (r = radius(m, r))
