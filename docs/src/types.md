@@ -67,7 +67,7 @@ nothing
 ```
 ![Example of a LinearLayeredModel](LinearLayeredModel_example.svg)
 
-```docs
+```@docs
 LinearLayeredModel
 ```
 
