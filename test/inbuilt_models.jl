@@ -27,6 +27,7 @@ using SeisModels
             @test vp(PREM, 0) ≈ 11.2622
             @test hasattenuation(PREM)
             @test Qμ(PREM, 1000) ≈ 84.6
+            @test eta(PREM, 1000) == 1.0
             @test moment_of_inertia(PREM)/(
                 mass(PREM, surface_radius(PREM))*surface_radius(PREM)^2*1e6) ≈ 0.3308 atol=0.0001
             @test gravity(PREM, surface_radius(PREM)) ≈ 9.81 atol=0.02
