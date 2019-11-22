@@ -10,8 +10,6 @@ using SeisModels
         @test depth(m, 0.25) == 0.75
         @test hasattenuation(m)
         @test hasdensity(m)
-        @test m == deepcopy(m)
-        @test PREM != AK135
     end
     let a = 1, n = 2, arr = rand(2), m = SteppedLayeredModel(a, n, [0.005 + 0.99rand(), 1],
             arr, arr, [], true, arr, arr, arr, arr, arr, false, [], [])
@@ -19,4 +17,15 @@ using SeisModels
         @test !hasattenuation(m)
         @test !hasdensity(m)
     end
+end
+
+@testset "Model comparison" begin
+    @test m == deepcopy(m)
+    @test PREM != AK135
+    let prem′ = deepcopy(PREM)
+        @test prem′ ≈ PREM
+        prem′.vp .= 1.00000001 .*PREM.vp
+        @test prem′ ≈ PREM
+        prem′.vp .= 1.000001 .* PREM.vp
+        @test !(prem′ ≈ PREM)
 end
