@@ -34,6 +34,9 @@ Models may also provide:
   - Shear wave quality factor (`Qμ`)
   - Bulk sound quality factor (`Qκ`)
 
+(For anisotropic models, the values of VP and VS rather than VPV etc. should
+be some average—perhaps the Voigt average—of the anisotropic velocities.)
+
 Derived properties for all models:
 
 - Radius from centre of Earth to a given depth (`depth`) in km
