@@ -62,8 +62,10 @@ Derived properties can be computed for all models with density:
 """
 module SeisModels
 
-import QuadGK: quadgk
 using DelimitedFiles: readdlm, writedlm
+using Printf: @printf
+
+using QuadGK: quadgk
 
 export
     # Model types
