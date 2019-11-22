@@ -4,4 +4,5 @@ using Test
     include("models_1d.jl")
     include("inbuilt_models.jl")
     include("basic_properties.jl")
+    include("io.jl")
 end
