@@ -20,7 +20,7 @@ using SeisModels
 end
 
 @testset "Model comparison" begin
-    @test m == deepcopy(m)
+    @test IASP91 == deepcopy(IASP91)
     @test PREM != AK135
     let prem′ = deepcopy(PREM)
         @test prem′ ≈ PREM
@@ -28,4 +28,5 @@ end
         @test prem′ ≈ PREM
         prem′.vp .= 1.000001 .* PREM.vp
         @test !(prem′ ≈ PREM)
+    end
 end
