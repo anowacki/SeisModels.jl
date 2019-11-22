@@ -10,6 +10,8 @@ using SeisModels
         @test depth(m, 0.25) == 0.75
         @test hasattenuation(m)
         @test hasdensity(m)
+        @test m == deepcopy(m)
+        @test PREM != AK135
     end
     let a = 1, n = 2, arr = rand(2), m = SteppedLayeredModel(a, n, [0.005 + 0.99rand(), 1],
             arr, arr, [], true, arr, arr, arr, arr, arr, false, [], [])

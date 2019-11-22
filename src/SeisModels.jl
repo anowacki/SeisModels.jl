@@ -118,6 +118,10 @@ abstract type SeisModel end
 # Allow models to be broadcasted as scalars
 Base.broadcastable(x::SeisModel) = Ref(x)
 
+# Default equality comparison
+Base.:(==)(m1::T, m2::T) where {T<:SeisModel} =
+    all(getfield(m1, f) == getfield(m2, f) for f in fieldnames(T))
+
 ## Basic properties of models
 include("basic_properties.jl")
 
