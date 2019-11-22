@@ -131,6 +131,9 @@ include("basic_properties.jl")
 ## 1D models
 include("models_1d.jl")
 
+## Conversion between models
+include("conversion.jl")
+
 ## IO
 include("io.jl")
 
