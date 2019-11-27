@@ -76,24 +76,69 @@ end
 # Evaluation routines--all documented here
 # TODO: Use Horner's method à la Base.@evalpoly
 for (sym, name, unit) in zip(model_variables_SeisModel1D, model_names_SeisModel1D, model_units_SeisModel1D)
-    @eval begin
-        """
-            $(split(string($sym), ".")[end])(m::SeisModel1D, r; depth=false) -> $($name)
-        
-        Return the value of $($name)$($unit) for model `m` at radius `r` km.
-        
-        If `depth` is `true`, then `r` is given as a depth in km instead.
-        """
-        function ($sym)(m::PREMPolyModel, r::Real; depth::Bool=false)
-            length(m.$sym) > 0 || throw(ArgumentError("$($name) not defined for model"))
-            depth && (r = radius(m, r))
-            ir = findlayer(m, r)
-            x = r/m.a
-            val = m.$(sym)[1,ir]
-            for k in 2:size(m.$sym, 1)
-                val = val + m.$(sym)[k,ir]*x^(k-1)
+    # Velocities, which can be corrected for period if we have attenuation
+    # and a reference frequency
+    if sym in (:vp, :vs, :vph, :vpv, :vsh, :vsv)
+        VP, VS = if sym in (:vp, :vs)
+            :vp, :vs
+        elseif sym in (:vph, :vsh)
+            :vph, :vsh
+        else
+            :vpv, :vsv
+        end
+        _correct = Symbol(:_correct_attenuation_, String(sym)[2])
+        @eval begin
+            """
+                $(split(string($sym), ".")[end])(m::SeisModel1D, r; depth=false, freq=nothing) -> $($name)
+
+            Return the value of $($name)$($unit) for model `m` at radius `r` km.
+
+            If `depth` is `true`, then `r` is given as a depth in km instead.
+
+            If `freq` is given, then the velocity is corrected for attenuation.
+            This requires the model has attenuation and a reference frequency.
+            """
+            function ($sym)(m::PREMPolyModel, r::Real; depth::Bool=false, freq=nothing)
+                length(m.$sym) > 0 || throw(ArgumentError("$($name) not defined for model"))
+                depth && (r = radius(m, r))
+                ir = findlayer(m, r)
+                x = r/m.a
+                val = m.$(sym)[1,ir]
+                for k in 2:size(m.$sym, 1)
+                    val = val + m.$(sym)[k,ir]*x^(k-1)
+                end
+                freq === nothing && return val
+                hasattenuation(m) ||
+                    throw(ArgumentError("cannot correct a nonattenuating model " *
+                                        "for attenuation"))
+                hasreffrequency(m) ||
+                    throw(ArgumentError("no reference frequency defined for model"))
+                E = 4/3*($(VS)(m, r)/$(VP)(m, r))^2
+                qκ = 1/Qκ(m, r)
+                qμ = 1/Qμ(m, r)
+                $(_correct)(val, freq, E, qμ, qκ)
             end
-            val
+        end
+    else
+        @eval begin
+            """
+                $(split(string($sym), ".")[end])(m::SeisModel1D, r; depth=false) -> $($name)
+            
+            Return the value of $($name)$($unit) for model `m` at radius `r` km.
+            
+            If `depth` is `true`, then `r` is given as a depth in km instead.
+            """
+            function ($sym)(m::PREMPolyModel, r::Real; depth::Bool=false)
+                length(m.$sym) > 0 || throw(ArgumentError("$($name) not defined for model"))
+                depth && (r = radius(m, r))
+                ir = findlayer(m, r)
+                x = r/m.a
+                val = m.$(sym)[1,ir]
+                for k in 2:size(m.$sym, 1)
+                    val = val + m.$(sym)[k,ir]*x^(k-1)
+                end
+                val
+            end
         end
     end
 end
@@ -123,7 +168,8 @@ function evaluate(m::PREMPolyModel, field::Symbol, r; depth::Bool=false)
     val
 end
 
-
+_correct_attenuation_s(vs, freq, E, qμ, qκ) = vs*(1 - log(1/freq)/π*qμ)
+_correct_attenuation_p(vp, freq, E, qμ, qκ) = vp*(1 - log(1/freq)/π*((1 - E)*qκ + E*qμ))
 
 """
     SteppedLayeredModel <: SeisModel1D
