@@ -60,7 +60,7 @@ using SeisModels
             for model_type in (SteppedLayeredModel, LinearLayeredModel, PREMPolyModel)
                 m = if model_type <: PREMPolyModel
                     model_type(R, n, radii, Vp', Vs', rho', true, Vpv', Vph', Vsv', Vsh', Eta',
-                        true, Qkappa', Qmu')
+                        true, Qkappa', Qmu', NaN)
                 else
                     model_type(R, n, radii, Vp, Vs, rho, true, Vpv, Vph, Vsv, Vsh, Eta,
                         true, Qkappa, Qmu)

@@ -17,6 +17,13 @@ using SeisModels
         @test !hasattenuation(m)
         @test !hasdensity(m)
     end
+    @test hasreffrequency(PREM)
+    @test reffrequency(PREM) == 1.0
+    let m = PREMPolyModel([getfield(PREM, f)
+                           for f in fieldnames(PREMPolyModel)][1:end-1]..., NaN)
+        @test !hasreffrequency(m)
+        @test_throws ArgumentError reffrequency(m)
+    end
 end
 
 @testset "Model comparison" begin

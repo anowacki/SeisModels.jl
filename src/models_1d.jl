@@ -42,6 +42,10 @@ and to compute the value of `x` in layer `i`, for an Earth radius of `a` km,
 at a radius of `r` km, the expression is:
 
     val_x = x[i,1] + (r/a)*x[i,2] + (r/a)^2*x[i,3] ... (r/a)^order*x[i,order+1]
+
+The reference frequency in Hz for the velocities in case of attenuation is
+given by the `fref` field.  If `fref` is `NaN`, then no reference frequency
+is defined for the model.
 """
 struct PREMPolyModel <: SeisModel1D
     "Earth radius in km"
@@ -65,6 +69,8 @@ struct PREMPolyModel <: SeisModel1D
     attenuation :: Bool
     Qμ :: Array{Float64}
     Qκ :: Array{Float64}
+    "Reference frequency in Hz"
+    fref :: Float64
 end
 
 # Evaluation routines--all documented here

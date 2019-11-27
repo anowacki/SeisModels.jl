@@ -26,6 +26,8 @@ using SeisModels
             @test isanisotropic(PREM)
             @test vp(PREM, 0) ≈ 11.2622
             @test hasattenuation(PREM)
+            @test hasreffrequency(PREM)
+            @test reffrequency(PREM) == 1.0
             @test Qμ(PREM, 1000) ≈ 84.6
             @test eta(PREM, 1000) == 1.0
             @test moment_of_inertia(PREM)/(

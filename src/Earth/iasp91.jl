@@ -34,5 +34,5 @@ const IASP91 = PREMPolyModel(6371.0, 11,
 	# aniso
 	false, [], [], [], [], [],
 	# attenuation
-	false, [], []
+	false, [], [], NaN
 	)

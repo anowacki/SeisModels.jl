@@ -22,8 +22,10 @@ Qkappa
 depth
 hasattenuation
 hasdensity
+hasreffrequency
 isanisotropic
 radius
+reffrequency
 surface_radius
 ```
 

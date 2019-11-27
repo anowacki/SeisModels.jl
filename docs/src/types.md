@@ -99,8 +99,9 @@ vps =   reshape( # Ensure we have a matrix with 1 column and 4 rows
 vss = vps./α
 isaniso = hasQ = false
 rhos = vphs = vpvs = vshs = vsvs = etas = Qmu = Qkappa = []
+fref = 1.0 # Attenuation reference frequency in Hz
 
-m = PREMPolyModel(500, 1, radii, vps, vss, rhos, isaniso, vphs, vpvs, vshs, vsvs, etas, hasQ, Qmu, Qkappa)
+m = PREMPolyModel(500, 1, radii, vps, vss, rhos, isaniso, vphs, vpvs, vshs, vsvs, etas, hasQ, Qmu, Qkappa, fref)
 ```
 
 Note that the polynomial coefficients appear as the row of a matrix,

@@ -23,6 +23,14 @@ Return `true` if density is defined for model `m`, and `false` otherwise.
 hasdensity(m::SeisModel) = !isempty(m.density)
 
 """
+    hasreffrequency(m::PREMPolyModel) -> ::Bool
+
+Return `true` if a reference frequency is defined for `PREMPolyModel` `m`,
+and `false` otherwise.
+"""
+hasreffrequency(m::PREMPolyModel) = !isnan(m.fref)
+
+"""
     isanisotropic(m) -> ::Bool
 
 Return `true` if the model `m` is anisotropic and `false` otherwise.
@@ -35,6 +43,17 @@ isanisotropic(m::SeisModel) = m.aniso
 Return the `radius` in km for the model `m` given a `depth` in km.
 """
 radius(m::SeisModel, depth) = surface_radius(m) - depth
+
+"""
+    reffrequency(m::PREMPolyModel) = f
+
+Return the reference frequency for a `PREMPolyModel` `m` in Hz.
+"""
+function reffrequency(m::PREMPolyModel)
+    hasreffrequency(m) ||
+        throw(ArgumentError("model does not have a reference frequency"))
+    m.fref
+end
 
 """
     surface_radius(m) -> radius
