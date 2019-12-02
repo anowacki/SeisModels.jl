@@ -30,7 +30,8 @@ function LinearLayeredModel(m::PREMPolyModel, spacing=20)
         push!(radii, rtop)
         push!(r_eval, rtop == R ? rtop : rtop_minus)
     end
-    Vp, Vs, Rho = vp.(m, r_eval), vs.(m, r_eval), density.(m, r_eval)
+    Vp, Vs = vp.(m, r_eval), vs.(m, r_eval)
+    Rho = hasdensity(m) ? density.(m, r_eval) : []
     Vpv, Vph, Vsv, Vsh, Eta = isanisotropic(m) ?
         (vpv.(m, r_eval), vph.(m, r_eval), vsv.(m, r_eval), vsh.(m, r_eval), eta.(m, r_eval)) :
         ([], [], [], [], [])

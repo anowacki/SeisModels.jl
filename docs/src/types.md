@@ -121,3 +121,13 @@ savefig("PREMPolyModel_example.svg")
 ```@docs
 PREMPolyModel
 ```
+
+#### Conversion
+`PREMPolyModels` can be converted into `LinearLayeredModel`s simply
+by passing a `PREMPolyModel` to the `LinearLayeredModel` constructor,
+like so:
+```@repl example
+LinearLayeredModel(PREM)
+```
+
+The minimum layer thickness can be specified by the second argument.

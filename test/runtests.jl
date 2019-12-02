@@ -5,4 +5,5 @@ using Test
     include("inbuilt_models.jl")
     include("basic_properties.jl")
     include("io.jl")
+    include("conversion.jl")
 end
