@@ -8,7 +8,8 @@ makedocs(
         "Model types" => "types.md",
         "Examples" => "examples.md",
         "Model input-output" => "io.md",
-        "Function index" => "function_index.md"
+        "Function index" => "function_index.md",
+        "References" => "references.md"
         ]
     )
 
