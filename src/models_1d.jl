@@ -89,7 +89,7 @@ for (sym, name, unit) in zip(model_variables_SeisModel1D, model_names_SeisModel1
         _correct = Symbol(:_correct_attenuation_, String(sym)[2])
         @eval begin
             """
-                $(split(string($sym), ".")[end])(m::SeisModel1D, r; depth=false, freq=nothing) -> $($name)
+                $(split(string($sym), ".")[end])(m::SeisModel1D, r; depth=false, freq=reffrequency(m)) -> $($name)
 
             Return the value of $($name)$($unit) for model `m` at radius `r` km.
 
@@ -113,10 +113,11 @@ for (sym, name, unit) in zip(model_variables_SeisModel1D, model_names_SeisModel1
                                         "for attenuation"))
                 hasreffrequency(m) ||
                     throw(ArgumentError("no reference frequency defined for model"))
+                freq == reffrequency(m) && return val
                 E = 4/3*($(VS)(m, r)/$(VP)(m, r))^2
                 qκ = 1/Qκ(m, r)
                 qμ = 1/Qμ(m, r)
-                $(_correct)(val, freq, E, qμ, qκ)
+                $(_correct)(val, freq, reffrequency(m), E, qμ, qκ)
             end
         end
     else
@@ -168,8 +169,8 @@ function evaluate(m::PREMPolyModel, field::Symbol, r; depth::Bool=false)
     val
 end
 
-_correct_attenuation_s(vs, freq, E, qμ, qκ) = vs*(1 - log(1/freq)/π*qμ)
-_correct_attenuation_p(vp, freq, E, qμ, qκ) = vp*(1 - log(1/freq)/π*((1 - E)*qκ + E*qμ))
+_correct_attenuation_s(vs, freq, reffreq, E, qμ, qκ) = vs*(1 - log(reffreq/freq)/π*qμ)
+_correct_attenuation_p(vp, freq, reffreq, E, qμ, qκ) = vp*(1 - log(reffreq/freq)/π*((1 - E)*qκ + E*qμ))
 
 """
     SteppedLayeredModel <: SeisModel1D

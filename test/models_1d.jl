@@ -50,6 +50,15 @@ using SeisModels
             end
         end
 
+        @testset "PREMPolyModels" begin
+            # Velocities default to reference frequency
+            for f in (vp, vs, vpv, vsv, vph, vsh)
+                @test f(PREM, 5000) == f(PREM, 5000, freq=reffrequency(PREM))
+            end
+            # Value from separate implementation at https://github.com/andreww/prem4derg
+            @test vs(PREM, 1000, freq=0.1) == 3.5274008549889566
+        end
+
         # TODO: Add tests for LinearLayeredModel and PREMPolyModel
     end
 

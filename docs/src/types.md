@@ -131,3 +131,21 @@ LinearLayeredModel(PREM)
 ```
 
 The minimum layer thickness can be specified by the second argument.
+
+#### Attenuation
+Attenuation in `PREMPolyModels` is specified as in PREM (see equation
+(3) in section 6 on page 309).  That means, the
+shear and bulk quality factors ($Q_\mu$ and $Q_\kappa$ respectively)
+control the effective velocities, which will vary by wave frequency.
+
+By default, velocities for `PREMPolyModel`s are returned at the reference
+frequency, which can be found with [`reffrequency`](@ref) and is given
+in Hz.  To obtain velocities at other frequencies, just pass a target
+frequency to the relevant function via the `freq` keyword argument.
+
+In this example, we ask for the Voigt average isotropic shear-wave
+velocity at radius 4500 km for a frequency of 0.01 Hz (equally,
+100 s period):
+```@repl example
+vs(PREM, 4500, freq=0.01)
+```
