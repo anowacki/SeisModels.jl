@@ -11,47 +11,52 @@ Read a 1D seismic model from a Mineos tabular format file.
 ### References:
 - https://geodynamics.org/cig/software/mineos/mineos-manual.pdf
 """
-function read_mineos(file)
-    open(file, "r") do f
-        name = readline(f)
-        ifanis, tref, ifdeck = parse.((Int, Float64, Int), split(readline(f)))
-        aniso = ifanis == 1
-        ifdeck != 1 && error("File '$file' is not in tabular format (`ifdeck` is `$ifdeck`)")
-        n, nic, noc = parse.(Int, split(readline(f)))
-        d = readdlm(f)
-        r = d[:,1]./1e3
-        a = maximum(r)
-        rho = d[:,2]./1e3
-        if aniso
-            vpv = d[:,3]./1e3
-            vsv = d[:,4]./1e3
-            vph = d[:,7]./1e3
-            vsh = d[:,8]./1e3
-            eta = d[:,9]
-            voigt_vels = voigt_velocities.(vpv, vsv, vph, vsh, eta)
-            vp = [v[1] for v in voigt_vels]
-            vs = [v[2] for v in voigt_vels]
-        else
-            vp = d[:,3]./1e3
-            vs = d[:,4]./1e3
-            vpv = vph = vsv = vsh = eta = []
-        end
-        Qκ = d[:,5]
-        Qμ = d[:,6]
-        attenuation = !(all(isequal(0), Qκ) && all(isequal(0), Qμ))
-        if !attenuation
-            Qμ = []
-            Qκ = []
-        end
-        LinearLayeredModel(a, n, r, vp, vs, rho, aniso, vph, vpv, vsh, vsv, eta,
-                           attenuation, Qμ, Qκ)
+function read_mineos(io::IO)
+    name = readline(io)
+    ifanis, tref, ifdeck = parse.((Int, Float64, Int), split(readline(io)))
+    aniso = ifanis == 1
+    ifdeck != 1 && error("File '$file' is not in tabular format (`ifdeck` is `$ifdeck`)")
+    n, nic, noc = parse.(Int, split(readline(io)))
+    d = readdlm(io)
+    r = d[:,1]./1e3
+    a = maximum(r)
+    rho = d[:,2]./1e3
+    if aniso
+        vpv = d[:,3]./1e3
+        vsv = d[:,4]./1e3
+        vph = d[:,7]./1e3
+        vsh = d[:,8]./1e3
+        eta = d[:,9]
+        voigt_vels = voigt_velocities.(vpv, vsv, vph, vsh, eta)
+        vp = [v[1] for v in voigt_vels]
+        vs = [v[2] for v in voigt_vels]
+    else
+        vp = d[:,3]./1e3
+        vs = d[:,4]./1e3
+        vpv = vph = vsv = vsh = eta = []
     end
+    Qκ = d[:,5]
+    Qμ = d[:,6]
+    attenuation = !(all(isequal(0), Qκ) && all(isequal(0), Qμ))
+    if !attenuation
+        Qμ = []
+        Qκ = []
+    end
+    LinearLayeredModel(a, n, r, vp, vs, rho, aniso, vph, vpv, vsh, vsv, eta,
+                       attenuation, Qμ, Qκ)
 end
 
-"""
-    write_mineos(m::LinearLayeredModel, file, freq=1.0, title="Model from SeisModels.jl")
+read_mineos(file::AbstractString) = (open(file, "r") do io; read_mineos(io); end)
 
-Save a `SeisModel1D` as a Mineos 'tabular' format file.  Supply the reference
+# TODO: Remove when bumping minor or major version
+Base.@deprecate write_mineos(model::LinearLayeredModel, file::AbstractString, args...) write_mineos(file, model, args...)
+
+"""
+    write_mineos(file, m::LinearLayeredModel, freq=1.0, title="Model from SeisModels.jl")
+    write_mineos(io::IO, m, args...)
+
+Save a `SeisModel1D` as a Mineos 'tabular' format file to `file` on disk or
+to an `io`.  Optionally supply the reference
 frequency `freq` in Hz (which defaults to 1 Hz) and a `title`.
 
 Note that Mineos has two types of model file; one parameterised by radial knots
@@ -66,7 +71,7 @@ not support writing polynomial format files.
 ## Reference
 - Mineos manual, https://geodynamics.org/cig/software/mineos/mineos-manual.pdf
 """
-function write_mineos(m::LinearLayeredModel, file, freq=1.0, title="Model from SeisModels.jl")
+function write_mineos(io::IO, m::LinearLayeredModel, freq=1.0, title="Model from SeisModels.jl")
     _check_mineos_title(title)
     ifanis = isanisotropic(m) ? 1 : 0
     tref = freq
@@ -86,46 +91,15 @@ function write_mineos(m::LinearLayeredModel, file, freq=1.0, title="Model from S
     else
         Qμ = Qκ = zeros(m.n)
     end
-    open(file, "w") do f
-        println(f, title)
-        println(f, ifanis, " ", tref, " ", ifdeck)
-        println(f, N, " ", nic, " ", noc)
-        writedlm(f, [m.r*1e3 rho vpv vsv Qκ Qμ vph vsh eta])
-    end
+    println(io, title)
+    println(io, ifanis, " ", tref, " ", ifdeck)
+    println(io, N, " ", nic, " ", noc)
+    writedlm(io, [m.r*1e3 rho vpv vsv Qκ Qμ vph vsh eta])
     nothing
 end
 
-function write_mineos(m::PREMPolyModel, file, freq=1.0, title="Model from SeisModels.jl")
-    error("write_mineos does not support PREMPolyModels.  " *
-          "Convert this model to a LinearLayeredModel first.")
-    _check_mineos_title(title)
-    ifanis = isanisotropic(m) ? 1 : 0
-    tref = freq
-    ifdeck = 0
-    N = _check_mineos_num_layers(m)
-    nic, noc = core_interface_layers(m)
-    _check_mineos_max_poly_degree(m)
-    rho = m.density
-    fields = isanisotropic(m) ? (:density, :vpv, :vsv, :Qκ, :Qμ, :vph, :vsh, :eta) :
-                                (:density, :vp, :vs, :Qκ, :Qμ)
-    open(file, "w") do f
-        println(f, title)
-        println(f, ifanis, " ", tref, " ", ifdeck)
-        println(f, N, " ", nic, " ", noc, " ", surface_radius(m))
-        for (ilayer, rtop) in enumerate(m.r)
-            rbot = ilayer == 1 ? 0.0 : m.r[ilayer-1]
-            println(f, ilayer, " ", rbot, " ", rtop)
-            for field in fields
-                vals = getfield(m, field)
-                n = size(vals, 1)
-                for ideg in 1:(MINEOS_MAX_DEGREE + 1)
-                    @printf(f, "%9.5f", ideg > n ? 0.0 : vals[ideg,ilayer])
-                end
-                println(f)
-            end
-        end
-    end
-end
+write_mineos(file::AbstractString, m::LinearLayeredModel, args...) =
+    (open(file, "w") do io; write_mineos(io, m, args...); end)
 
 """
     _check_mineos_title(title)
@@ -163,6 +137,63 @@ function _check_mineos_max_poly_degree(m::PREMPolyModel)
     end
     nothing
 end
+
+"""
+    read_tvel(file) -> model::LinearLayeredModel
+    read_tvel(io::IOBuffer) -> model::LinearLayeredModel
+
+Read a `model` from a file in the ttimes 'tvel' format.  This format
+specifies a `LinearLayeredModel` with only isotropic Vp, Vs and
+density.
+
+The two header lines are ignored bu must be present.
+"""
+function read_tvel(io::IO; file=nothing)
+    lines = readlines(io)
+    length(lines) > 2 || error("input .tvel string has too few lines")
+    r, Vp, Vs, rho = Float64[], Float64[], Float64[], Float64[]
+    for i in 3:length(lines)
+        tokens = split(lines[i])
+        length(tokens) >= 4 || error("too few columns at line $i of " *
+            (file === nothing ? "input" : "file '$file'"))
+        rr, vvpp, vvss, ρρ = parse.(Float64, tokens)
+        push!(r, rr)
+        push!(Vp, vvpp)
+        push!(Vs, vvss)
+        push!(rho, ρρ)
+    end
+    R = r[end]
+    r .= R .- r
+    reverse!(r)
+    reverse!(Vp)
+    reverse!(Vs)
+    reverse!(rho)
+    LinearLayeredModel(r=r, vp=Vp, vs=Vs, density=rho)
+end
+
+read_tvel(file::AbstractString) = (open(file, "r") do io
+    read_tvel(io, file=file); end)
+
+"""
+    write_tvel(file, model::LinearLayeredModel; comment1="SeisModels.jl - P", comment2="SeisModels.jl - S")
+    write_tvel(io::IO, model; kwargs...)
+
+Write a `model` to `file` or an arbitrary `IO` object
+in the `ttimes` 'tvel' format.
+
+Optionally supply the two comment lines, `comment1` and `comment2`
+which form the header of the file.
+"""
+function write_tvel(io::IO, model::LinearLayeredModel; file=nothing,
+    comment1="SeisModels.jl - P", comment2="SeisModels.jl - S")
+    println(io, comment1)
+    println(io, comment2)
+    dep = surface_radius(model) .- reverse(model.r)
+    writedlm(io, [dep reverse(model.vp) reverse(model.vs) reverse(model.density)])
+end
+
+write_tvel(file::AbstractString, model::LinearLayeredModel; kwargs...) =
+    (open(file, "w") do io; write_tvel(io, model; file=file, kwargs...); end)
 
 """
     core_interface_layers(m) -> i_icb, i_cmb

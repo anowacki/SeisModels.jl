@@ -111,7 +111,9 @@ export
 
     # IO
     read_mineos,
-    write_mineos
+    write_mineos,
+    read_tvel,
+    write_tvel
 
 @static if VERSION < v"1.1"
     isnothing(x) = x === nothing

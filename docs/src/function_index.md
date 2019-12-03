@@ -46,6 +46,8 @@ youngs_modulus
 ```@docs
 read_mineos
 write_mineos
+read_tvel
+write_tvel
 ```
 
 ## Conversion
