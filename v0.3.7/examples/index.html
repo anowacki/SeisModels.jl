@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Examples · SeisModels.jl documentation</title><link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.2.0/normalize.min.css" rel="stylesheet" type="text/css"/><link href="https://fonts.googleapis.com/css?family=Lato|Roboto+Mono" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL=".."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.2.0/require.min.js" data-main="../assets/documenter.js"></script><script src="../siteinfo.js"></script><script src="../../versions.js"></script><link href="../assets/documenter.css" rel="stylesheet" type="text/css"/></head><body><nav class="toc"><h1>SeisModels.jl documentation</h1><select id="version-selector" onChange="window.location.href=this.value" style="visibility: hidden"></select><form class="search" id="search-form" action="../search/"><input id="search-query" name="q" type="text" placeholder="Search docs"/></form><ul><li><a class="toctext" href="../">Home</a></li><li><a class="toctext" href="../inbuilt_models/">Inbuilt models</a></li><li><a class="toctext" href="../types/">Model types</a></li><li class="current"><a class="toctext" href>Examples</a><ul class="internal"><li><a class="toctext" href="#Preamble-1">Preamble</a></li><li><a class="toctext" href="#Basic-properties-1">Basic properties</a></li><li><a class="toctext" href="#Derived-properties-1">Derived properties</a></li></ul></li><li><a class="toctext" href="../io/">Model input-output</a></li><li><a class="toctext" href="../function_index/">Function index</a></li><li><a class="toctext" href="../references/">References</a></li></ul></nav><article id="docs"><header><nav><ul><li><a href>Examples</a></li></ul><a class="edit-page" href="https://github.com/anowacki/SeisModels.jl/blob/master/docs/src/examples.md"><span class="fa"></span> Edit on GitHub</a></nav><hr/><div id="topbar"><span>Examples</span><a class="fa fa-bars" href="#"></a></div></header><h1><a class="nav-anchor" id="Examples-1" href="#Examples-1">Examples</a></h1><h2><a class="nav-anchor" id="Preamble-1" href="#Preamble-1">Preamble</a></h2><p>These commands all assume that you have done</p><pre><code class="language-julia-repl">julia&gt; using SeisModels</code></pre><p>first.</p><h2><a class="nav-anchor" id="Basic-properties-1" href="#Basic-properties-1">Basic properties</a></h2><p>To compute the P-wave velocity at the base of the Earth’s mantle (2750 km depth) in the iasp91, ak135 and PREM models, and compare them all to PREM, you could do</p><pre><code class="language-julia-repl">julia&gt; vels = vp.((IASP91, AK135, PREM), 2750, depth=true)
+(13.658709937215507, 13.650124346076458, 13.682574481505672)
+
+julia&gt; 100 .* (vels .- vels[end]) ./ vels[end]
+(-0.17441559936269008, -0.2371639596998019, 0.0)</code></pre><p>(So they all agree to less than a quarter of a percent!)</p><p>To retrieve a density profile across the inner core boundary in PREM:</p><pre><code class="language-julia-repl">julia&gt; r = 1200:10:1250;
+
+julia&gt; density.(PREM, r)
+6-element Array{Float64,1}:
+ 12.774950441875058
+ 12.769702841631439
+ 12.764411692838081
+ 12.161956678291448
+ 12.15677821054005
+ 12.151565889647408</code></pre><p>To get the planetary radius in km of the moon used in Weber et al.’s (2011) model:</p><pre><code class="language-julia-repl">julia&gt; surface_radius(MOON_WEBER_2011)
+1737.1</code></pre><p>The shear modulus in the transition zone:</p><pre><code class="language-julia-repl">julia&gt; shear_modulus(AK135, 600, depth=true)
+121.42818931417919</code></pre><h2><a class="nav-anchor" id="Derived-properties-1" href="#Derived-properties-1">Derived properties</a></h2><p>If a model includes density, then things like gravity, moment of inertia, and so on, can be easily calculated.</p><p>PREM used as constraining data a couple of gross Earth values: the mass should be <span>$5.974\times10^{24}$</span>kg, and the ratio <span>$I/MR^2$</span> should be 0.3308.  Let’s check how Dziewoński and Anderson did:</p><pre><code class="language-julia-repl">julia&gt; ≈(mass(PREM, 0, depth=true), 5.974e24, atol=0.001e24)
+true
+
+julia&gt; ≈(moment_of_inertia(PREM)/(mass(PREM, 0, depth=true)*(1e3*surface_radius(PREM))^2), 0.3308, atol=0.0001)
+true</code></pre><p>To calculate a lookup table of pressure in ak135 for use with another program, you could do:</p><pre><code class="language-julia-repl">julia&gt; using DelimitedFiles: writedlm
+
+julia&gt; r = 0:10:6371
+0:10:6370
+
+julia&gt; p = pressure.(AK135, r)
+638-element Array{Float64,1}:
+ 3.626046959480023e11
+ 3.626023286966298e11
+ 3.625952105333528e11
+ 3.625833793295275e11
+ 3.625668258317165e11
+ 3.625455138989647e11
+ 3.6251947931130023e11
+ 3.624887176845716e11
+ 3.62453218974155e11
+ 3.6241299028716626e11
+ ⋮
+ 2.3777587822013054e9
+ 2.0523157484471152e9
+ 1.7270346393467338e9
+ 1.4019134146913335e9
+ 1.0769501465962849e9
+ 7.751329842792505e8
+ 5.080048096800981e8
+ 2.6459178880708688e8
+ 2.40411774537565e7
+
+julia&gt; writedlm(&quot;lookup_table.txt&quot;, [r p])</code></pre><footer><hr/><a class="previous" href="../types/"><span class="direction">Previous</span><span class="title">Model types</span></a><a class="next" href="../io/"><span class="direction">Next</span><span class="title">Model input-output</span></a></footer></article></body></html>
