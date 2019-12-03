@@ -140,13 +140,13 @@ end
 
 """
     read_tvel(file) -> model::LinearLayeredModel
-    read_tvel(io::IOBuffer) -> model::LinearLayeredModel
+    read_tvel(io::IO) -> model::LinearLayeredModel
 
 Read a `model` from a file in the ttimes 'tvel' format.  This format
 specifies a `LinearLayeredModel` with only isotropic Vp, Vs and
 density.
 
-The two header lines are ignored bu must be present.
+The two header lines are ignored but must be present.
 """
 function read_tvel(io::IO; file=nothing)
     lines = readlines(io)
