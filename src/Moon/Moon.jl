@@ -10,9 +10,9 @@ using ..SeisModels
 """
 	ALL_MODELS
 
-List of Earth model instances as `Symbol`s.
+List of Moon model instances as `Symbol`s.
 
-If adding new inbuilt Earth models, append the name of the new model to this list
+If adding new inbuilt Moon models, append the name of the new model to this list
 """
 const ALL_MODELS = (:MOON_WEBER_2011,)
 
