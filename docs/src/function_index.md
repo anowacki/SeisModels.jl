@@ -47,3 +47,15 @@ youngs_modulus
 read_mineos
 write_mineos
 ```
+
+## Conversion
+```@docs
+LinearLayeredModel(::PREMPolyModel)
+```
+
+## Construction
+```@docs
+LinearLayeredModel()
+PREMPolyModel()
+SteppedLayeredModel()
+```

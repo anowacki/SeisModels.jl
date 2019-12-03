@@ -16,7 +16,8 @@ julia> import Pkg; pkg"add https://github.com/anowacki/SeisModels.jl"
 If all is working, you should be able to reproduce the figure below easily:
 
 ```@eval
-using SeisModels, Plots
+using SeisModels
+using Plots: plot, plot!, savefig
 p = plot(legend=:left, framestyle=:box, grid=false, title="PREM", xlabel="Radius (km)", ylabel="Velocity (km/s) or density (g/cm^3)")
 for (f,l) in zip((vp, vs, SeisModels.density), ("Vp", "Vs", "Density"))
     plot!(p, r->f(PREM, r), 0, 6371, label=l)

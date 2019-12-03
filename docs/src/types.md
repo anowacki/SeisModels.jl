@@ -9,7 +9,7 @@ The current type hierarchy is as follows:
 - `SeisModel`: Abstract type of all seismic models
   - `SeisModel1D`: Abstract type of all one-dimensonal (radially-symmetric)
     seismic models
-    - `SteppedLayeredModel`: Type defined by layers with contstat properties.
+    - `SteppedLayeredModel`: Type defined by layers with contstant properties.
     - `LinearLayeredModel`: Type defined by layers with constant gradient.
     - `PREMPolyModel`: Type defined by polynomials.
 
@@ -23,7 +23,8 @@ properties in each layer.  The radii define the top of each layer.
 
 An example of this is Weber et al.’s (2011) moon model:
 ```@eval
-using SeisModels, Plots
+using SeisModels
+using Plots: plot, plot!, vline!, savefig
 p = plot(legend=:bottom, framestyle=:box, grid=false, title="SteppedLayeredModel example: the moon", xlabel="Radius (km)", ylabel="Velocity (km/s) or density (g/cm^3)")
 for (f,l) in zip((vp, vs, SeisModels.density), ("Vp", "Vs", "Density"))
     plot!(p, r->f(MOON_WEBER_2011, r), 0, surface_radius(MOON_WEBER_2011), label=l, line=2)
@@ -37,6 +38,9 @@ savefig(p, "SteppedLayeredModel_example.svg")
 SteppedLayeredModel
 ```
 
+See the [constructor](../function_index/#SeisModels.SteppedLayeredModel-Tuple{}) for details on creating
+`SteppedLayeredModel`s.
+
 ### `LinearLayeredModel`
 
 A `LinearLayeredModel` is described by radial nodes, between which
@@ -49,14 +53,15 @@ be given by:
 
 ```@repl example
 using SeisModels
-m = LinearLayeredModel(1.0, 4, [0, 0.3, 0.3, 1], [1, 1, 1.8, 1], [0, 0, 1, 0.7], [], false, [], [], [], [], [], false, [], [])
+m = LinearLayeredModel(r=[0, 0.3, 0.3, 1], vp=[1, 1, 1.8, 1], vs=[0, 0, 1, 0.7])
 ```
 
 You can see that the nodes are used to define a constant lower layer
 and linearly-varying upper layer:
 ```@eval
-using Plots, SeisModels
-m = LinearLayeredModel(1.0, 4, [0, 0.3, 0.3, 1], [1, 1, 1.8, 1], [0, 0, 1, 0.7], [], false, [], [], [], [], [], false, [], [])
+using SeisModels
+using Plots: plot, plot!, scatter!, savefig
+m = LinearLayeredModel(r=[0, 0.3, 0.3, 1], vp=[1, 1, 1.8, 1], vs=[0, 0, 1, 0.7])
 p = plot(legend=:topright, framestyle=:box, grid=false, title="LinearLayeredModel example", xlabel="Radius (km)", ylabel="Velocity (km/s)")
 for (f,s,l) in zip((vp, vs), (:vp, :vs), ("Vp", "Vs"))
     plot!(p, r->f(m, r), 0, surface_radius(m), label=l, line=2)
@@ -70,6 +75,9 @@ nothing
 ```@docs
 LinearLayeredModel
 ```
+
+See the [constructor](../function_index/#SeisModels.LinearLayeredModel-Tuple{}) for details on creating
+`LinearLayeredModel`s.
 
 ### `PREMPolyModel`
 
@@ -97,11 +105,8 @@ vps =   reshape( # Ensure we have a matrix with 1 column and 4 rows
          :, 1)
 α = 1.7
 vss = vps./α
-isaniso = hasQ = false
-rhos = vphs = vpvs = vshs = vsvs = etas = Qmu = Qkappa = []
-fref = 1.0 # Attenuation reference frequency in Hz
 
-m = PREMPolyModel(500, 1, radii, vps, vss, rhos, isaniso, vphs, vpvs, vshs, vsvs, etas, hasQ, Qmu, Qkappa, fref)
+m = PREMPolyModel(r=radii, vp=vps, vs=vss)
 ```
 
 Note that the polynomial coefficients appear as the row of a matrix,
@@ -122,15 +127,19 @@ savefig("PREMPolyModel_example.svg")
 PREMPolyModel
 ```
 
+See the [constructor](../function_index/#SeisModels.PREMPolyModel-Tuple{}) for details on creating
+`PREMPolyModel`s.
+
 #### Conversion
 `PREMPolyModels` can be converted into `LinearLayeredModel`s simply
-by passing a `PREMPolyModel` to the `LinearLayeredModel` constructor,
-like so:
+by passing a `PREMPolyModel` to the
+[`LinearLayeredModel`](@ref LinearLayeredModel(::PREMPolyModel))
+constructor, like so:
 ```@repl example
 LinearLayeredModel(PREM)
 ```
 
-The minimum layer thickness can be specified by the second argument.
+The maximum layer thickness can be specified by the second argument.
 
 #### Attenuation
 Attenuation in `PREMPolyModels` is specified as in PREM (see equation

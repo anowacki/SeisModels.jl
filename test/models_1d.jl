@@ -62,6 +62,71 @@ using SeisModels
         # TODO: Add tests for LinearLayeredModel and PREMPolyModel
     end
 
+    # Keyword constructors
+    @testset "Construction" begin
+        let n = 5, r = [0; sort(10_000rand(n-1))], Vp = rand(n), Vs = 0.5rand(n),
+                Rho = rand(n), Vpv = 1.01.*Vp, Vph = 0.99.*Vp,
+                Vsv = 0.99.*Vs, Vsh = 1.01.*Vs, Eta = 1 .+ 0.1rand(n),
+                qμ = rand(n), qκ = rand(n), R = last(r), fref = rand(),
+                null = Array{Float64}(undef, 0, 0)
+            for model_type in (LinearLayeredModel, SteppedLayeredModel)
+                # Arrays wrong length
+                @test_throws ArgumentError model_type(r=r, vp=[Vp; 1])
+                # r must be provided
+                @test_throws UndefKeywordError model_type(vp=Vp, vs=Vs)
+                # r must increase
+                @test_throws ArgumentError model_type(r=[3, 2, 1])
+                # Equivalence of default and keyword constructors
+                @test model_type(R, n, r, Vp, Vs, Rho, true, Vph, Vpv,
+                    Vsh, Vsv, Eta, true, qμ, qκ) ==
+                    model_type(r=r, vp=Vp, vs=Vs, density=Rho, vph=Vph,
+                        vpv=Vpv, vsh=Vsh, vsv=Vsv, Qμ=qμ, Qκ=qκ, eta=Eta)
+                @test model_type(R, n, r, Vp, Vs, [], false, [],
+                                         [], [], [], [], true, qμ, qκ) ==
+                    model_type(r=r, vp=Vp, vs=Vs, Qμ=qμ, Qκ=qκ)
+                @test model_type(R, n, r, Vp, Vs, Rho, true,
+                                         Vph, Vpv, Vsh, Vsv, Eta, false, [], []) ==
+                    model_type(r=r, vp=Vp, vs=Vs, density=Rho,
+                                       vph=Vph, vpv=Vpv, vsh=Vsh, vsv=Vsv, eta=Eta)
+                # ASCII arguments are the same and take precedence
+                @test model_type(r=r, Qmu=qμ, Qkappa=qκ) ==
+                    model_type(r=r, Qμ=qμ, Qκ=qκ) ==
+                    model_type(r=r, Qμ=Vs, Qκ=Vp, Qmu=qμ, Qkappa=qκ)
+            end
+            ## Model-specific tests
+            # LinearLayeredModel
+            # r must start at 0
+            @test_throws ArgumentError LinearLayeredModel(r=r[2:end])
+
+            # PREMPolyModel
+            @test_throws ArgumentError PREMPolyModel(r=r, vp=[Vp; 1])
+            @test_throws UndefKeywordError PREMPolyModel(vp=Vp, vs=Vs)
+            # r must increase
+            @test_throws ArgumentError PREMPolyModel(r=[3, 2, 1])
+            # Equivalence of default and keyword constructors
+            @test PREMPolyModel(R, n, r, Vp', Vs', Rho', true, Vph', Vpv',
+                Vsh', Vsv', Eta', true, qμ', qκ', fref) ==
+                PREMPolyModel(r=r, vp=Vp, vs=Vs, density=Rho, vph=Vph,
+                    vpv=Vpv, vsh=Vsh, vsv=Vsv, Qμ=qμ, Qκ=qκ, eta=Eta, fref=fref)
+            @test PREMPolyModel(R, n, r, Vp', Vs', null, false, null,
+                                     null, null, null, null, true, qμ', qκ', NaN) ==
+                PREMPolyModel(r=r, vp=Vp, vs=Vs, Qμ=qμ, Qκ=qκ)
+            @test PREMPolyModel(R, n, r, Vp', Vs', Rho', true, Vph', Vpv',
+                                Vsh', Vsv', Eta', false, null, null, fref) ==
+                PREMPolyModel(r=r, vp=Vp, vs=Vs, density=Rho, vph=Vph,
+                              vpv=Vpv, vsh=Vsh, vsv=Vsv, eta=Eta, fref=fref)
+            # ASCII arguments are the same and take precedence
+            @test PREMPolyModel(r=r, Qmu=qμ, Qkappa=qκ) ==
+                PREMPolyModel(r=r, Qμ=qμ, Qκ=qκ) ==
+                PREMPolyModel(r=r, Qμ=Vs, Qκ=Vp, Qmu=qμ, Qkappa=qκ)
+            # Arrays are converted to the correct shape
+            @test_throws ArgumentError PREMPolyModel(r=r, vp=rand(3, n+1))
+            Vp′ = rand(3, n)
+            @test PREMPolyModel(r=r, vp=Vp′) == PREMPolyModel(R, n, r, Vp′,
+                null, null, false, null, null, null, null, null, false, null, null, NaN)
+        end
+    end
+
     # Test for equivalence of depth versions of functions
     @testset "Depth" begin
         let n = 5, radii = sort(rand(n)), R = radii[end],

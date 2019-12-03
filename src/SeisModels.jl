@@ -113,6 +113,10 @@ export
     read_mineos,
     write_mineos
 
+@static if VERSION < v"1.1"
+    isnothing(x) = x === nothing
+end
+
 """
 Abstract supertype of all models of the Earth in the `SeisModels` module.
 All models should be a subtype of this or one of `SeisModel`'s abstract
