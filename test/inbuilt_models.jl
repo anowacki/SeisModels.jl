@@ -18,6 +18,7 @@ using SeisModels
             @test !isanisotropic(IASP91)
             @test !hasdensity(IASP91)
             @test !hasattenuation(IASP91)
+            @test_throws ArgumentError mass(IASP91)
         end
 
         @testset "PREM" begin
@@ -31,7 +32,7 @@ using SeisModels
             @test Qμ(PREM, 1000) ≈ 84.6
             @test eta(PREM, 1000) == 1.0
             @test moment_of_inertia(PREM)/(
-                mass(PREM, surface_radius(PREM))*surface_radius(PREM)^2*1e6) ≈ 0.3308 atol=0.0001
+                mass(PREM)*surface_radius(PREM)^2*1e6) ≈ 0.3308 atol=0.0001
             @test gravity(PREM, surface_radius(PREM)) ≈ 9.81 atol=0.02
         end
     end
@@ -42,9 +43,9 @@ using SeisModels
             @test !isanisotropic(MOON_WEBER_2011)
             @test hasdensity(MOON_WEBER_2011)
             @test !hasattenuation(MOON_WEBER_2011)
-            @test mass(MOON_WEBER_2011, surface_radius(MOON_WEBER_2011)) ≈ 7.35e22 atol=0.01e22
+            @test mass(MOON_WEBER_2011) ≈ 7.35e22 atol=0.01e22
             @test moment_of_inertia(MOON_WEBER_2011) / 
-                (mass(MOON_WEBER_2011, surface_radius(MOON_WEBER_2011)) *
+                (mass(MOON_WEBER_2011) *
                     surface_radius(MOON_WEBER_2011)^2 * 1e6) ≈ 0.394 atol=0.01
         end
     end

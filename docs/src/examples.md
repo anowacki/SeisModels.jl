@@ -48,8 +48,8 @@ the mass should be $5.974\times10^{24}$kg, and the ratio
 $I/MR^2$ should be 0.3308.  Let’s check how Dziewoński and Anderson
 did:
 ```@repl example
-≈(mass(PREM, 0, depth=true), 5.974e24, atol=0.001e24)
-≈(moment_of_inertia(PREM)/(mass(PREM, 0, depth=true)*(1e3*surface_radius(PREM))^2), 0.3308, atol=0.0001)
+≈(mass(PREM), 5.974e24, atol=0.001e24)
+≈(moment_of_inertia(PREM)/(mass(PREM)*(1e3*surface_radius(PREM))^2), 0.3308, atol=0.0001)
 ```
 
 To calculate a lookup table of pressure in ak135 for use with another

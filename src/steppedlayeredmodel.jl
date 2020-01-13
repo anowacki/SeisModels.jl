@@ -128,6 +128,7 @@ function evaluate(m::SteppedLayeredModel, field::Symbol, r; depth::Bool=false)
 end
 
 function mass(m::SteppedLayeredModel, r; depth::Bool=false)
+    hasdensity(m) || throw(ArgumentError("model does not contain density"))
     depth && (r = radius(m, r))
     l = findlayer(m, r)
     r *= 1.e3

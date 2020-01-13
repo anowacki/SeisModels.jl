@@ -237,6 +237,7 @@ _correct_attenuation_s(vs, freq, reffreq, E, qμ, qκ) = vs*(1 - log(reffreq/fre
 _correct_attenuation_p(vp, freq, reffreq, E, qμ, qκ) = vp*(1 - log(reffreq/freq)/π*((1 - E)*qκ + E*qμ))
 
 function mass(m::PREMPolyModel, r; depth::Bool=false)
+    hasdensity(m) || throw(ArgumentError("model does not contain density"))
     depth && (r = radius(m, r))
     l = findlayer(m, r)
     r *= 1.e3 # SI

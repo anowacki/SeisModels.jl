@@ -64,8 +64,13 @@ gravity(m::SeisModel1D, r) = (r == 0) ? 0. : NewtonG*mass(m, r)/(r*1.e3)^2
 Return the mass in kg between the centre of the model and the radius `r` km.
 
 If `depth` is `true`, `r` is treated as a depth in km instead.
+
+    mass(m) -> mass
+
+Return the mass for the whole body in kg (between the centre of the model
+and the surface).
 """
-mass
+mass(m::SeisModel1D) = mass(m, surface_radius(m))
 
 """
     pressure(m::SeisModel1D, r; depth=false) -> p

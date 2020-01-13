@@ -38,6 +38,7 @@ using SeisModels
                 @test Qκ(m, 0.2) == Qkappa(m, 0.2) == 300
                 @test Qκ(m, 0.3) == 400
                 @test mass(m, surface_radius(m)) == 4/3*π*(0.25e3^3*4e3 + (1e3^3 - 0.25e3^3)*3e3)
+                @test mass(m) == mass(m, surface_radius(m))
                 @test gravity(m, 0.75) ≈ 6.67428e-11*4/3*π*(0.25e3^3*4e3 + (0.75e3^3 - 0.25e3^3)*3e3)/0.75e3^2
                 @test shear_modulus(m, 1) == 3e3*1e3^2/1e9
                 @test bulk_modulus(m, 0.5) == (3e3*1e3^2/1e9 - 4/3*shear_modulus(m, 0.5))
@@ -57,6 +58,7 @@ using SeisModels
             end
             # Value from separate implementation at https://github.com/andreww/prem4derg
             @test vs(PREM, 1000, freq=0.1) == 3.5274008549889566
+            @test mass(PREM) == mass(PREM, surface_radius(PREM))
         end
 
         # TODO: Add tests for LinearLayeredModel and PREMPolyModel
