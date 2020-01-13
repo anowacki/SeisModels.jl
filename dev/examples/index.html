@@ -14,10 +14,10 @@ julia&gt; density.(PREM, r)
  12.15677821054005
  12.151565889647408</code></pre><p>To get the planetary radius in km of the moon used in Weber et al.’s (2011) model:</p><pre><code class="language-julia-repl">julia&gt; surface_radius(MOON_WEBER_2011)
 1737.1</code></pre><p>The shear modulus in the transition zone:</p><pre><code class="language-julia-repl">julia&gt; shear_modulus(AK135, 600, depth=true)
-121.42818931417919</code></pre><h2><a class="nav-anchor" id="Derived-properties-1" href="#Derived-properties-1">Derived properties</a></h2><p>If a model includes density, then things like gravity, moment of inertia, and so on, can be easily calculated.</p><p>PREM used as constraining data a couple of gross Earth values: the mass should be <span>$5.974\times10^{24}$</span>kg, and the ratio <span>$I/MR^2$</span> should be 0.3308.  Let’s check how Dziewoński and Anderson did:</p><pre><code class="language-julia-repl">julia&gt; ≈(mass(PREM, 0, depth=true), 5.974e24, atol=0.001e24)
+121.42818931417919</code></pre><h2><a class="nav-anchor" id="Derived-properties-1" href="#Derived-properties-1">Derived properties</a></h2><p>If a model includes density, then things like gravity, moment of inertia, and so on, can be easily calculated.</p><p>PREM used as constraining data a couple of gross Earth values: the mass should be <span>$5.974\times10^{24}$</span>kg, and the ratio <span>$I/MR^2$</span> should be 0.3308.  Let’s check how Dziewoński and Anderson did:</p><pre><code class="language-julia-repl">julia&gt; ≈(mass(PREM), 5.974e24, atol=0.001e24)
 true
 
-julia&gt; ≈(moment_of_inertia(PREM)/(mass(PREM, 0, depth=true)*(1e3*surface_radius(PREM))^2), 0.3308, atol=0.0001)
+julia&gt; ≈(moment_of_inertia(PREM)/(mass(PREM)*(1e3*surface_radius(PREM))^2), 0.3308, atol=0.0001)
 true</code></pre><p>To calculate a lookup table of pressure in ak135 for use with another program, you could do:</p><pre><code class="language-julia-repl">julia&gt; using DelimitedFiles: writedlm
 
 julia&gt; r = 0:10:6371
