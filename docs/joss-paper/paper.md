@@ -44,7 +44,11 @@ Due to Julia's multiple dispatch programming paradigm, extending
 ``SeisModels.jl`` to represent bodies of different types or ones parameterised
 differently to the inbuilt types is simple and incurs no performance
 penalty.  The software has been benchmarked against independent implementations
-and has a significant speed advantage over similar Python software.
+and computes properties quickly enough to test millions of models against
+data, enabling robust parameter searches or Monte Carlo sampling.
+For the example of working with PREM on a desktop computer with an Intel
+E5-1650 CPU, it takes only 12 ms to calculate the pressure at the centre
+of the Earth, whilst surface gravity is returned within 5 µs.
 
 ``SeisModels.jl`` has been used for research projects and teaching,
 and provides the ability to read and write files in appropriate formats
@@ -58,6 +62,9 @@ models.
 
 Documentation is available at a
 [dedicated website](https://anowacki.github.io/SeisModels.jl/stable).
+The package comes with a test set which can be easily run by
+users—after adding the package, simply run
+`import Pkg; Pkg.test("SeisModels")` in Julia.
 
 
 # Acknowledgements
