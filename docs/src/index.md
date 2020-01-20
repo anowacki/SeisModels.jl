@@ -10,10 +10,11 @@ and compute derived properties (such as pressure and gravity).
 SeisModels.jl can be added to your Julia environment like so:
 
 ```julia
-julia> import Pkg; pkg"add https://github.com/anowacki/SeisModels.jl"
+julia> import Pkg; Pkg.add("SeisModels")
 ```
 
-If all is working, you should be able to reproduce the figure below easily:
+If all is working, you should be able to reproduce the figure below easily
+(using [Plots.jl](https://github.com/JuliaPlots/Plots.jl)):
 
 ```@eval
 using SeisModels

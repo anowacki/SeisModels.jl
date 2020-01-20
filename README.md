@@ -23,11 +23,10 @@ model of the moon.
 
 
 ## How to install
-Although not registered as an official package, SeisModels.jl can be added to your
-Julia install like so:
+SeisModels.jl can be added to your Julia install like so:
 
 ```julia
-julia> import Pkg; Pkg.pkg"add https://github.com/anowacki/SeisModels.jl"
+julia> import Pkg; Pkg.add("SeisModels")
 ```
 
 
