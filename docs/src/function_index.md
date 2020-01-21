@@ -50,9 +50,13 @@ read_tvel
 write_tvel
 ```
 
-## Conversion
+## [Conversion](@id conversion)
 ```@docs
 LinearLayeredModel(::PREMPolyModel)
+LinearLayeredModel(::SteppedLayeredModel)
+PREMPolyModel(::LinearLayeredModel)
+PREMPolyModel(::SteppedLayeredModel)
+SteppedLayeredModel(::Union{LinearLayeredModel, PREMPolyModel})
 ```
 
 ## Construction

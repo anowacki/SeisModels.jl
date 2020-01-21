@@ -130,17 +130,6 @@ PREMPolyModel
 See the [constructor](../function_index/#SeisModels.PREMPolyModel-Tuple{}) for details on creating
 `PREMPolyModel`s.
 
-#### Conversion
-`PREMPolyModels` can be converted into `LinearLayeredModel`s simply
-by passing a `PREMPolyModel` to the
-[`LinearLayeredModel`](@ref LinearLayeredModel(::PREMPolyModel))
-constructor, like so:
-```@repl example
-LinearLayeredModel(PREM)
-```
-
-The maximum layer thickness can be specified by the second argument.
-
 #### Attenuation
 Attenuation in `PREMPolyModels` is specified as in PREM (see equation
 (3) in section 6 on page 309).  That means, the
@@ -158,3 +147,24 @@ velocity at radius 4500 km for a frequency of 0.01 Hz (equally,
 ```@repl example
 vs(PREM, 4500, freq=0.01)
 ```
+
+
+## Conversion
+Conversion can be performed between any of the above model types.  Note
+that in some cases (e.g., `SteppedLayeredModel` to `LinearLayeredModel`
+or `LinearLayeredModel` to `PREMPolyModel`) no information is lost, whilst
+in others (e.g., `PREMPolyModel` to `LinearLayeredModel` or to
+`SteppedLayeredModel`) the converted model can only be an approximation
+to the original.
+
+To convert between model types, simply pass one model to the constructor
+of another.  For example:
+
+```@repl example
+m = PREM;
+m2 = LinearLayeredModel(PREM);
+typeof(m2)
+≈(mass(m), mass(m2))
+```
+
+See the [conversion section](@ref conversion) for details.

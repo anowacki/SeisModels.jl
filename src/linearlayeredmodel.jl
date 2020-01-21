@@ -111,7 +111,7 @@ end
 
 _set_coeffs_size(::Type{LinearLayeredModel}, n, v::Nothing) = []
 function _set_coeffs_size(::Type{LinearLayeredModel}, n, v::Vector)
-    length(v) == n || throw(ArgumentError("number of value must be $n"))
+    length(v) == n || throw(ArgumentError("number of values must be $n"))
     v
 end
 
