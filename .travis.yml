@@ -12,11 +12,9 @@ julia:
 notifications:
   email: false
 
-matrix:
+jobs:
   allow_failures:
     - julia: nightly
-
-jobs:
   include:
     - stage: "Documentation"
       julia: 1.3
