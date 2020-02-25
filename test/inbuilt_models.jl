@@ -35,6 +35,22 @@ using SeisModels
                 mass(PREM)*surface_radius(PREM)^2*1e6) ≈ 0.3308 atol=0.0001
             @test gravity(PREM, surface_radius(PREM)) ≈ 9.81 atol=0.02
         end
+
+        @testset "STW105" begin
+            @test surface_radius(STW105) == 6371.0
+            @test isanisotropic(STW105)
+            @test hasattenuation(STW105)
+            @test hasdensity(STW105)
+            @test length(STW105.r) == 750
+            @test mass(STW105) ≈ 5.974e24 atol=0.0005e24
+            @test moment_of_inertia(STW105)/(
+                mass(STW105)*surface_radius(STW105)^2*1e6) ≈ 0.3308 atol=0.0001
+            @test eta(STW105, 100, depth=true) ≈ 0.85 atol=0.1
+            @test density(STW105, 150.127) ≈ 13.08357 atol=0.00001
+            @test vsh(STW105, 6291.0001) ≈ 4.57246
+            @test Qμ(STW105, 3482) == 355.0
+            @test Qκ(STW105, 0) == 1327.6
+        end
     end
 
     @testset "Moon models" begin

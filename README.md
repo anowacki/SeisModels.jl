@@ -120,6 +120,7 @@ does support reading and writing of
   - `AK135`
   - `IASP91`
   - `PREM`
+  - `STW105`
 - Moon
   - `MOON_WEBER_2011`
 
