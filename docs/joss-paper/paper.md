@@ -61,7 +61,7 @@ Julia module to directly compute normal mode properties for planetary
 models.
 
 Documentation is available at a
-[dedicated website](https://anowacki.github.io/SeisModels.jl/stable).
+dedicated website ([https://anowacki.github.io/SeisModels.jl/stable](https://anowacki.github.io/SeisModels.jl/stable)).
 The package comes with a test set which can be easily run by
 users—after adding the package, simply run
 `import Pkg; Pkg.test("SeisModels")` in Julia.
