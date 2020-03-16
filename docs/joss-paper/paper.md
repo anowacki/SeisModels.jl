@@ -36,7 +36,8 @@ by a set of polynomial coefficients.  Density,
 elastic isotropic velocity (P-wave and S-wave), elastic radially-anisotropic
 velocity and attenuation are supported as basic model parameters,
 permitting the computation at arbitrary radius of gravity, pressure,
-mass, and so on.  Inbuilt models include PREM [@dziewonski:1981],
+mass, and so on.  Inbuilt models include the Preliminary Reference Earth Model
+[@dziewonski:1981] ('PREM'),
 AK135 [@kennett:1995] and iasp91 [@kennett:1991] for the Earth,
 and the Moon model of @weber:2011.
 
@@ -51,10 +52,11 @@ E5-1650 CPU, it takes only 12 ms to calculate the pressure at the centre
 of the Earth, whilst surface gravity is returned within 5 µs.
 
 ``SeisModels.jl`` has been used for research projects and teaching,
-and provides the ability to read and write files in appropriate formats
-to calculate normal mode eigenfrequencies and -functions using the
-[Mineos](https://geodynamics.org/cig/software/mineos/) software, and
-ray-theoretical travel times using the Java TauP [@crotwell:1999]
+and provides the ability to read and write files in some standard formats.
+Currently supported are the file format used by the
+[Mineos](https://geodynamics.org/cig/software/mineos/) software
+to calculate normal mode eigenfrequencies and -functions, and the 'tvel'
+format used to calculate ray-theoretical travel times with the Java TauP [@crotwell:1999]
 and Python Obspy [@obspy] packages. ``SeisModels.jl`` is used by the
 [``Mineos.jl``](https://github.com/anowacki/Mineos.jl)
 Julia module to directly compute normal mode properties for planetary
@@ -69,6 +71,7 @@ users—after adding the package, simply run
 
 # Acknowledgements
 
+I thank the reviewers and editor for helpful comments.
 The author was supported by a NERC standard grant (NE/R001154/1).
 The Deep Earth Research Group at the School of Earth and Environment, University of Leeds is acknowledged for inspiring the creation of this
 package, and Andrew Walker for the publication of it.
