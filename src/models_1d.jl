@@ -23,7 +23,7 @@ function findlayer(m::SeisModel1D, r::Real)
     r < 0. && throw(DomainError(r, "radius cannot be negative"))
     r > m.a && throw(DomainError(r, "radius is greater than Earth radius for model ($(m.a) km)"))
     for i in 1:length(m.r)
-        r < m.r[i] && return i
+        @inbounds r < m.r[i] && return i
     end
     length(m.r)
 end
