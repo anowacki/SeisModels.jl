@@ -52,6 +52,9 @@ using SeisModels
         end
 
         @testset "PREMPolyModels" begin
+            # Polynomial evaluation
+            @test SeisModels._evalpoly(0.25, hcat([0, 0, 0, 0], [1, 2, 3, 4]), 2) == 1.75
+            @test SeisModels._evalpoly(0.25, hcat([1, 2, 3, 4], [0, 0, 0, 0]), 1) == 1.75
             # Velocities default to reference frequency
             for f in (vp, vs, vpv, vsv, vph, vsh)
                 @test f(PREM, 5000) == f(PREM, 5000, freq=reffrequency(PREM))

@@ -137,6 +137,20 @@ _set_coeffs_size(::Type{PREMPolyModel}, n, v::A) where A =
     throw(ArgumentError("unexpected type of coefficients: $A"))
 
 
+"""
+    _evalpoly(x, coeffs, i)
+
+Evaluate a polynomial whose coefficients are given in `coeffs[:,i]`
+at `x`.  Coefficients should be orderd `a₀, a₁, ..., aₙ`.
+"""
+function _evalpoly(x, coeffs::AbstractArray{<:Real,2}, i)
+    val = coeffs[1,i]
+    for k in 2:size(coeffs, 1)
+        @inbounds val = val + coeffs[k,i]*x^(k-1)
+    end
+    val
+end
+
 # Evaluation routines--all documented here
 # TODO: Use Horner's method à la Base.@evalpoly
 for (sym, name, unit) in zip(model_variables_SeisModel1D, model_names_SeisModel1D, model_units_SeisModel1D)
@@ -167,10 +181,7 @@ for (sym, name, unit) in zip(model_variables_SeisModel1D, model_names_SeisModel1
                 depth && (r = radius(m, r))
                 ir = findlayer(m, r)
                 x = r/m.a
-                val = m.$(sym)[1,ir]
-                for k in 2:size(m.$sym, 1)
-                    val = val + m.$(sym)[k,ir]*x^(k-1)
-                end
+                val = _evalpoly(x, m.$(sym), ir)
                 freq === nothing && return val
                 hasattenuation(m) ||
                     throw(ArgumentError("cannot correct a nonattenuating model " *
@@ -178,9 +189,11 @@ for (sym, name, unit) in zip(model_variables_SeisModel1D, model_names_SeisModel1
                 hasreffrequency(m) ||
                     throw(ArgumentError("no reference frequency defined for model"))
                 freq == reffrequency(m) && return val
-                E = 4/3*($(VS)(m, r)/$(VP)(m, r))^2
-                qκ = 1/Qκ(m, r)
-                qμ = 1/Qμ(m, r)
+                _vp = $(sym == VP ? :val : :(_evalpoly(x, m.$(VP), ir)))
+                _vs = $(sym == VS ? :val : :(_evalpoly(x, m.$(VS), ir)))
+                E = 4/3*(_vs/_vp)^2
+                qκ = 1/_evalpoly(x, m.Qκ, ir)
+                qμ = 1/_evalpoly(x, m.Qμ, ir)
                 $(_correct)(val, freq, reffrequency(m), E, qμ, qκ)
             end
         end
@@ -198,10 +211,7 @@ for (sym, name, unit) in zip(model_variables_SeisModel1D, model_names_SeisModel1
                 depth && (r = radius(m, r))
                 ir = findlayer(m, r)
                 x = r/m.a
-                val = m.$(sym)[1,ir]
-                for k in 2:size(m.$sym, 1)
-                    val = val + m.$(sym)[k,ir]*x^(k-1)
-                end
+                val = _evalpoly(x, m.$(sym), ir)
                 val
             end
         end
@@ -226,10 +236,7 @@ function evaluate(m::PREMPolyModel, field::Symbol, r; depth::Bool=false)
     depth && (r = radius(m, r))
     ir = findlayer(m, r)
     x = r/m.a
-    val = y[1,ir]
-    for k in 2:size(y, 1)
-        val = val + y[k,ir]*x^(k-1)
-    end
+    val = _evalpoly(x, y, ir)
     val
 end
 
