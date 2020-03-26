@@ -27,6 +27,12 @@ savefig(p, "PREM_example.svg")
 ```
 ![Plot of properties of the PREM model](PREM_example.svg)
 
+## Citing
+If you use SeisModels.jl for your work, please cite the following paper:
+- Nowacki, A., 2020. SeisModels.jl: A Julia package for models of the
+  Earth’s interior. Journal of Open Source Software 5, 2043.
+  doi:[10.21105/joss.02043](https://doi.org/10.21105/joss.02043)
+
 ## Contents
 
 ```@contents

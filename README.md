@@ -9,6 +9,9 @@
 [![](https://img.shields.io/badge/docs-stable-blue.svg)](https://anowacki.github.io/SeisModels.jl/stable)
 [![](https://img.shields.io/badge/docs-dev-blue.svg)](https://anowacki.github.io/SeisModels.jl/dev)
 
+## Publication status
+[![DOI](https://joss.theoj.org/papers/10.21105/joss.02043/status.svg)](https://doi.org/10.21105/joss.02043)
+
 
 ## What is SeisModels.jl?
 A [Julia](http://julialang.org) package for dealing with models of the Earth's
@@ -183,3 +186,9 @@ search: PREMPolyModel
   val_x = x[i,1] + (r/a)*x[i,2] + (r/a)^2*x[i,3] ... (r/a)^order*x[i,order+1]
 
 ```
+
+## Citing
+If you use SeisModels.jl for your work, please cite the following paper:
+- Nowacki, A., 2020. SeisModels.jl: A Julia package for models of the
+  Earth’s interior. Journal of Open Source Software 5, 2043.
+  doi:[10.21105/joss.02043](https://doi.org/10.21105/joss.02043)

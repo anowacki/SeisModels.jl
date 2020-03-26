@@ -15,6 +15,8 @@
   Anisotropic shear-wave velocity structure of the Earth’s mantle: A global model.
   _J Geophys Res-Sol Ea_ 113, B06306.
   doi:[10.1029/2007JB005169](https://doi.org/10.1029/2007JB005169)
+- Nowacki, A., 2020. SeisModels.jl: A Julia package for models of the
+  Earth’s interior. Journal of Open Source Software 5, 2043. doi:[10.21105/joss.02043](https://doi.org/10.21105/joss.02043)
 - Weber, R.C.,, Lin, P.-Y.,, Garnero, E.J., Williams, Q., Lognonné, P., 2011.
   Seismic Detection of the Lunar Core. _Science_, 331, 309–312.doi:[10.1126/science.1199375](https://doi.org/10.1126/science.1199375)
 
