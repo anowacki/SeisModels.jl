@@ -141,18 +141,19 @@ _set_coeffs_size(::Type{PREMPolyModel}, n, v::A) where A =
     _evalpoly(x, coeffs, i)
 
 Evaluate a polynomial whose coefficients are given in `coeffs[:,i]`
-at `x`.  Coefficients should be orderd `a₀, a₁, ..., aₙ`.
+at `x`, using Horner's method.
+Coefficients should be orderd `a₀, a₁, ..., aₙ`.
 """
 function _evalpoly(x, coeffs::AbstractArray{<:Real,2}, i)
-    val = coeffs[1,i]
-    for k in 2:size(coeffs, 1)
-        @inbounds val = val + coeffs[k,i]*x^(k-1)
+    N = size(coeffs, 1)
+    val = coeffs[N,i]
+    for k in N-1:-1:1
+        @inbounds val = muladd(x, val, coeffs[k,i])
     end
     val
 end
 
 # Evaluation routines--all documented here
-# TODO: Use Horner's method à la Base.@evalpoly
 for (sym, name, unit) in zip(model_variables_SeisModel1D, model_names_SeisModel1D, model_units_SeisModel1D)
     # Velocities, which can be corrected for period if we have attenuation
     # and a reference frequency
