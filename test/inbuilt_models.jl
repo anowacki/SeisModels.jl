@@ -12,6 +12,18 @@ using SeisModels
             @test_throws ArgumentError Qμ(AK135, 1000)
         end
 
+        @testset "ek137" begin
+            @test EK137 isa LinearLayeredModel
+            @test surface_radius(EK137) == 6371.0
+            @test length(EK137.r) == 138
+            @test vp(EK137, 0) ≈ 11.2622
+            @test !isanisotropic(EK137)
+            @test hasdensity(EK137)
+            @test !hasattenuation(EK137)
+            @test_throws ArgumentError Qμ(EK137, 1000)
+            @test density(EK137, 0, depth=true) ≈ 2.6510
+        end
+
         @testset "iasp91" begin
             @test surface_radius(IASP91) == 6371.0
             @test length(IASP91.r) == 11

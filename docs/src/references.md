@@ -11,6 +11,9 @@
 - Kennett, B.L.N., Engdahl, E., Buland, R., 1995. Constraints on seismic
   velocities in the Earth from travel-times.
   _Geophys J Int_ 122, 108–124. doi:[10.1111/j.1365-246X.1995.tb03540.x](https://doi.org/10.1111/j.1365-246X.1995.tb03540.x)
+- Kennett, B.L.N., 2020. Radial earth models revisited.
+  Geophysical Journal International 222, 2189–2204.
+  doi:[10.1093/gji/ggaa298](https://doi.org/10.1093/gji/ggaa298)
 - Kustowski, B., Ekström, G., Dziewoński, A., 2008.
   Anisotropic shear-wave velocity structure of the Earth’s mantle: A global model.
   _J Geophys Res-Sol Ea_ 113, B06306.
