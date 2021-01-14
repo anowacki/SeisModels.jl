@@ -148,7 +148,7 @@ using SeisModels
                 z = R - r
                 for func in (vp, vs, density, vpv, vph, vsv, vsh, eta, Qκ, Qμ,
                         pressure, bulk_modulus, shear_modulus,
-                        youngs_modulus, poissons_ratio, mass, surface_mass)
+                        youngs_modulus, poissons_ratio, mass, surface_mass, gravity)
                     @test func(m, z, depth=true) ≈ func(m, r)
                 end
                 @test evaluate(m, :vp, z, depth=true) ≈ evaluate(m, :vp, r)

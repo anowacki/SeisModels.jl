@@ -51,11 +51,16 @@ end
 const NewtonG = 6.67428e-11
 
 """
-    gravity(m::SeisModel1D, r) -> g
+    gravity(m::SeisModel1D, r; depth=false) -> g
 
-Return the acceleration due to gravity, `g`, in m/s^2 at radius `r` km.
+Return the acceleration due to gravity, `g`, in m/s^2 at radius `r` in km.
+
+If `depth` is `true`, `r` is treated as a depth in km instead.
 """
-gravity(m::SeisModel1D, r) = (r == 0) ? 0. : NewtonG*mass(m, r)/(r*1.e3)^2
+function gravity(m::SeisModel1D, r; depth=false)
+    depth && (r = radius(m, r))
+    (r == 0) ? 0. : NewtonG*mass(m, r)/(r*1.e3)^2
+end
 
 # Individual implementations of mass are in model types' respective files
 """
