@@ -21,8 +21,7 @@ Currently, only three kinds of one-dimensional models are supported, but all mod
 parameterisations and models are acceptable for inclusion.  Contributions
 are welcome.
 
-Built in models are ak135, PREM, iasp91, and Weber et al. (Science, 2011)'s
-model of the moon.
+Built in models are [listed in the documentation](https://anowacki.github.io/SeisModels.jl/dev/inbuilt_models/).
 
 
 ## How to install
@@ -123,6 +122,7 @@ does support reading and writing of
   - `AK135`
   - `IASP91`
   - `PREM`
+  - `PREM_NOOCEAN`
   - `STW105`
 - Moon
   - `MOON_WEBER_2011`
@@ -163,6 +163,8 @@ does support reading and writing of
 #### IO
 - `read_mineos`: Read Mineos tabular-format file
 - `write_mineos`: Write Mineos tabular-format file
+- `read_tvel`: Write tvel-format file
+- `write_tvel`: Write tvel-format file
 
 
 ## Getting help
