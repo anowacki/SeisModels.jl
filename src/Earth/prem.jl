@@ -57,3 +57,26 @@ const PREM = PREMPolyModel(
     fref =
     1.0
     )
+
+"""
+# `PREM_NOOCEAN`
+
+Version of [`PREM`](@ref) where the liquid ocean layer is replaced by the
+crust beneath.  This model may be useful when the surface must be a solid.
+"""
+const PREM_NOOCEAN = let inds = 1:(PREM.n - 1)
+    PREMPolyModel(
+        r = [PREM.r[1:(PREM.n - 2)]; PREM.a],
+        vp = PREM.vp[:,inds],
+        vs = PREM.vs[:,inds],
+        density = PREM.density[:,inds],
+        vph = PREM.vph[:,inds],
+        vpv = PREM.vpv[:,inds],
+        vsh = PREM.vsh[:,inds],
+        vsv = PREM.vsv[:,inds],
+        eta = PREM.eta[:,inds],
+        Qμ = PREM.Qμ[:,inds],
+        Qκ = PREM.Qκ[:,inds],
+        fref = PREM.fref
+    )
+end

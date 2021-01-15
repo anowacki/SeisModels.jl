@@ -14,7 +14,7 @@ List of Earth model instances as `Symbol`s.
 
 If adding new inbuilt Earth models, append the name of the new model to this list
 """
-const ALL_MODELS = (:AK135, :EK137, :IASP91, :PREM, :STW105)
+const ALL_MODELS = (:AK135, :EK137, :IASP91, :PREM, :PREM_NOOCEAN, :STW105)
 
 include("ak135.jl")
 include("ek137.jl")

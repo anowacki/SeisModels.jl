@@ -48,6 +48,20 @@ using SeisModels
             @test gravity(PREM, surface_radius(PREM)) ≈ 9.81 atol=0.02
         end
 
+        @testset "PREM_NOOCEAN" begin
+            @test surface_radius(PREM_NOOCEAN) == surface_radius(PREM)
+            @test length(PREM_NOOCEAN.r) == length(PREM.r) - 1
+            @test isanisotropic(PREM_NOOCEAN)
+            @test vp(PREM_NOOCEAN, 0) ≈ 11.2622
+            @test hasattenuation(PREM_NOOCEAN)
+            @test hasreffrequency(PREM_NOOCEAN)
+            @test reffrequency(PREM_NOOCEAN) == 1.0
+            @test Qμ(PREM_NOOCEAN, 0, depth=true) == 600.0
+            @test eta(PREM_NOOCEAN, 0, depth=true) == 1.0
+            @test vp(PREM_NOOCEAN, 0, depth=true) == 5.8
+            @test vsv(PREM_NOOCEAN, 0, depth=true) == 3.2
+        end
+
         @testset "STW105" begin
             @test surface_radius(STW105) == 6371.0
             @test isanisotropic(STW105)
