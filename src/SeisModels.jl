@@ -84,6 +84,7 @@ export
     radius,
     reffrequency,
     surface_radius,
+    discontinuities,
 
     # Evaluation functions
     evaluate,

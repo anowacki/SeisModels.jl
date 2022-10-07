@@ -24,6 +24,12 @@ using SeisModels
         @test !hasreffrequency(m)
         @test_throws ArgumentError reffrequency(m)
     end
+    @test discontinuities(EK137) ==
+        [1217.5, 3479.5, 3631.0, 5711.0, 5961.0, 6161.0, 6336.0, 6351.0]
+    @test discontinuities(AK135, depths=true) ==
+        [20.0, 35.0, 210.0, 410.0, 660.0, 2740.0, 2891.5, 5153.5]
+    @test discontinuities(LinearLayeredModel(PREM)) ==
+        [1221.5, 3480.0, 3630.0, 5600.0, 5701.0, 5771.0, 5971.0, 6151.0, 6291.0, 6346.0, 6356.0, 6368.0]
 end
 
 @testset "Model comparison" begin
