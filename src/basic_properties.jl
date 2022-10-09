@@ -98,16 +98,17 @@ for the 1D `LinearLayeredModel` `m`.
 
 """
 function discontinuities(m::LinearLayeredModel; depths=false)
-    @assert issorted(m.r)
     # Discontinuities are represented as duplicated radii in LinearLayeredModels.
     duplicates = Float64[]
+    indices = Int[]
     for i = 2:length(m.r)
         if (
             isequal(m.r[i], m.r[i-1]) &&
             (length(duplicates) == 0 || !isequal(duplicates[end], m.r[i]))
         )
             push!(duplicates, m.r[i])
+            push!(indices, i-1)
         end
     end
-    depths ? reverse(depth.(m, duplicates)) : duplicates
+    depths ? (reverse(depth.(m, duplicates)), reverse(indices)) : (duplicates, indices)
 end
