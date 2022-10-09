@@ -72,6 +72,9 @@ nothing
 ```
 ![Example of a LinearLayeredModel](LinearLayeredModel_example.svg)
 
+Use [`discontinuities`](@ref) to find the radii and layer indices of
+the discontinuities in a `LinearLayeredModel`.
+
 ```@docs
 LinearLayeredModel
 ```

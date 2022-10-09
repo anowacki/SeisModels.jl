@@ -91,11 +91,27 @@ function voigt_velocities(vpv, vsv, vph, vsh, η)
 end
 
 """
-    discontinuities(m::LinearLayeredModel; depths=false)
+    discontinuities(m::LinearLayeredModel; depths=false) -> radii, indices
 
-Return the radii (or depths if `depths=true`) of velocity discontinuities
-for the 1D `LinearLayeredModel` `m`.
+Return the `radii` (or depths if `depths=true`; both in km) and `indices`
+of velocity discontinuities for the 1D `LinearLayeredModel` `m`.
 
+Discontinuities are marked in `LinearLayeredModel`s by two repeated radii,
+and the index returned for each one is the lower index.  Therefore
+`indices` gives the properties of the model below the discontinuities,
+and `indices .+ 1` gives the properties above.
+
+# Example
+```
+julia> radii, inds = discontinuities(AK135)
+([1217.5, 3479.5, 3631.0, 5711.0, 5961.0, 6161.0, 6336.0, 6351.0], [24, 69, 73, 116, 122, 127, 132, 134])
+
+julia> index_icb = inds[1]
+24
+
+julia> AK135.vp[index_icb], AK135.vp[index_icb + 1]
+(11.0427, 10.289)
+```
 """
 function discontinuities(m::LinearLayeredModel; depths=false)
     # Discontinuities are represented as duplicated radii in LinearLayeredModels.

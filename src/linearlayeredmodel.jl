@@ -5,6 +5,9 @@ A `LinearLayeredModel` contains `n` points at which velocities are defined, with
 linear interpolation between them.  Hence there are `n - 1` layers.
 
 Discontinuities are represented by two layers with the same radii.
+
+Use [`discontinuities`](@ref) to find the radii and layer indices of
+the discontinuities in a `LinearLayeredModel`.
 """
 struct LinearLayeredModel <: SeisModel1D
     "Earth radius in km"
