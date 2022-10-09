@@ -1,9 +1,8 @@
 # SeisModels.jl
 
 ## Build status
-[![Build Status](https://travis-ci.org/anowacki/SeisModels.jl.svg?branch=master)](https://travis-ci.org/anowacki/SeisModels.jl)
-[![Build status](https://ci.appveyor.com/api/projects/status/26pr6rgn71jb4yb2?svg=true)](https://ci.appveyor.com/project/AndyNowacki/seismodels-jl)
-[![Coverage Status](https://coveralls.io/repos/github/anowacki/SeisModels.jl/badge.svg?branch=master)](https://coveralls.io/github/anowacki/SeisModels.jl?branch=master)
+[![Build Status](https://github.com/anowacki/SeisModels.jl/workflows/CI/badge.svg)](https://github.com/anowacki/SeisModels.jl/actions)
+[![Code coverage](https://codecov.io/gh/anowacki/SeisModels.jl/branch/main/graph/badge.svg?token=zZLUNA3tJk)](https://codecov.io/gh/anowacki/SeisModels.jl)
 
 ## Documentation
 [![](https://img.shields.io/badge/docs-stable-blue.svg)](https://anowacki.github.io/SeisModels.jl/stable)
