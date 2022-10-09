@@ -2,7 +2,7 @@
 
 ## Build status
 [![Build Status](https://github.com/anowacki/SeisModels.jl/workflows/CI/badge.svg)](https://github.com/anowacki/SeisModels.jl/actions)
-[![Code coverage](https://codecov.io/gh/anowacki/SeisModels.jl/branch/main/graph/badge.svg?token=zZLUNA3tJk)](https://codecov.io/gh/anowacki/SeisModels.jl)
+[![Code coverage](https://codecov.io/gh/anowacki/SeisModels.jl/branch/master/graph/badge.svg?token=OX6WPKMG7G)](https://codecov.io/gh/anowacki/SeisModels.jl)
 
 ## Documentation
 [![](https://img.shields.io/badge/docs-stable-blue.svg)](https://anowacki.github.io/SeisModels.jl/stable)
