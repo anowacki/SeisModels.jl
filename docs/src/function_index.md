@@ -27,6 +27,7 @@ isanisotropic
 radius
 reffrequency
 surface_radius
+discontinuities
 ```
 
 ## Derived model properties

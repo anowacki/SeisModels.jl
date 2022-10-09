@@ -89,3 +89,26 @@ function voigt_velocities(vpv, vsv, vph, vsh, η)
     vs = sqrt(μ)
     vp, vs
 end
+
+"""
+    discontinuities(m::LinearLayeredModel; depths=false)
+
+Return the radii (or depths if `depths=true`) of velocity discontinuities
+for the 1D `LinearLayeredModel` `m`.
+
+"""
+function discontinuities(m::LinearLayeredModel; depths=false)
+    # Discontinuities are represented as duplicated radii in LinearLayeredModels.
+    duplicates = Float64[]
+    indices = Int[]
+    for i = 2:length(m.r)
+        if (
+            isequal(m.r[i], m.r[i-1]) &&
+            (length(duplicates) == 0 || !isequal(duplicates[end], m.r[i]))
+        )
+            push!(duplicates, m.r[i])
+            push!(indices, i-1)
+        end
+    end
+    depths ? (reverse(depth.(m, duplicates)), reverse(indices)) : (duplicates, indices)
+end
