@@ -54,9 +54,12 @@ Derived properties can be computed for all models with density:
 ### Inbuilt models
 
 - Earth
-  - `PREM`
-  - `IASP91`
   - `AK135`
+  - `EK137`
+  - `IASP91`
+  - `PREM`
+  - `PREM_NOOCEAN`
+  - `STW105`
 - Moon
   - `MOON_WEBER_2011`
 """
