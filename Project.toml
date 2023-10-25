@@ -1,7 +1,7 @@
 name = "SeisModels"
 uuid = "47bbc3d6-959e-5592-a00a-d17660d07a0f"
 authors = ["Andy Nowacki <a.nowacki@leeds.ac.uk> and contributors"]
-version = "1.5.0"
+version = "1.6.0"
 
 [deps]
 DelimitedFiles = "8bb1440f-4735-579b-a4ab-409b98df4dab"
