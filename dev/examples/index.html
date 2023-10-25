@@ -6,23 +6,23 @@
  12.161956678291448
  12.15677821054005
  12.151565889647408</code></pre><p>To get the planetary radius in km of the moon used in Weber et al.’s (2011) model:</p><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; surface_radius(MOON_WEBER_2011)</code><code class="nohighlight hljs ansi" style="display:block;">1737.1</code></pre><p>The shear modulus in the transition zone:</p><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; shear_modulus(AK135, 600, depth=true)</code><code class="nohighlight hljs ansi" style="display:block;">121.42818931417919</code></pre><h2 id="Derived-properties"><a class="docs-heading-anchor" href="#Derived-properties">Derived properties</a><a id="Derived-properties-1"></a><a class="docs-heading-anchor-permalink" href="#Derived-properties" title="Permalink"></a></h2><p>If a model includes density, then things like gravity, moment of inertia, and so on, can be easily calculated.</p><p>PREM used as constraining data a couple of gross Earth values: the mass should be <span>$5.974\times10^{24}$</span>kg, and the ratio <span>$I/MR^2$</span> should be 0.3308.  Let’s check how Dziewoński and Anderson did:</p><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; ≈(mass(PREM), 5.974e24, atol=0.001e24)</code><code class="nohighlight hljs ansi" style="display:block;">true</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; ≈(moment_of_inertia(PREM)/(mass(PREM)*(1e3*surface_radius(PREM))^2), 0.3308, atol=0.0001)</code><code class="nohighlight hljs ansi" style="display:block;">true</code></pre><p>To calculate a lookup table of pressure in ak135 for use with another program, you could do:</p><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; using DelimitedFiles: writedlm</code><code class="nohighlight hljs ansi" style="display:block;"></code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; r = 0:10:6371</code><code class="nohighlight hljs ansi" style="display:block;">0:10:6370</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; p = pressure.(AK135, r)</code><code class="nohighlight hljs ansi" style="display:block;">638-element Vector{Float64}:
- 3.626046959480023e11
- 3.626023286966298e11
- 3.625952105333528e11
- 3.625833793295275e11
+ 3.626046959480024e11
+ 3.626023286966299e11
+ 3.625952105333531e11
+ 3.6258337932952747e11
  3.625668258317165e11
- 3.625455138989647e11
- 3.6251947931130023e11
- 3.624887176845716e11
- 3.62453218974155e11
- 3.6241299028716626e11
+ 3.6254551389896466e11
+ 3.6251947931130035e11
+ 3.624887176845715e11
+ 3.6245321897415497e11
+ 3.624129902871664e11
  ⋮
- 2.3777587822013054e9
+ 2.377758782201305e9
  2.0523157484471152e9
- 1.7270346393467338e9
+ 1.7270346393467343e9
  1.4019134146913335e9
- 1.0769501465962849e9
- 7.751329842792505e8
- 5.080048096800981e8
+ 1.0769501465962846e9
+ 7.751329842792506e8
+ 5.0800480968009806e8
  2.6459178880708688e8
- 2.40411774537565e7</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; writedlm(&quot;lookup_table.txt&quot;, [r p])</code><code class="nohighlight hljs ansi" style="display:block;"></code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../types/">« Model types</a><a class="docs-footer-nextpage" href="../io/">Model input-output »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.23 on <span class="colophon-date" title="Tuesday 11 October 2022 19:58">Tuesday 11 October 2022</span>. Using Julia version 1.8.2.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+ 2.40411774537565e7</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; writedlm(&quot;lookup_table.txt&quot;, [r p])</code><code class="nohighlight hljs ansi" style="display:block;"></code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../types/">« Model types</a><a class="docs-footer-nextpage" href="../io/">Model input-output »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.25 on <span class="colophon-date" title="Wednesday 25 October 2023 07:58">Wednesday 25 October 2023</span>. Using Julia version 1.9.3.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
