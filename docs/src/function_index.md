@@ -20,6 +20,7 @@ Qkappa
 ## Model enquiry
 ```@docs
 depth
+discontinuities
 hasattenuation
 hasdensity
 hasreffrequency
