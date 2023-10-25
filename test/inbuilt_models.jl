@@ -62,6 +62,22 @@ using SeisModels
             @test vsv(PREM_NOOCEAN, 0, depth=true) == 3.2
         end
 
+        @testset "SC_REM" begin
+            sc_rem_models = (
+                SC_REM_25_LOW, SC_REM_25_HIGH, SC_REM_50_LOW, SC_REM_50_HIGH,
+                SC_REM_75_LOW, SC_REM_75_HIGH
+            )
+            for m in sc_rem_models
+                @test surface_radius(m) == 6371.0
+                @test !isanisotropic(m)
+                @test hasdensity(m)
+                @test hasattenuation(m)
+                I_MR2 = moment_of_inertia(m)/(mass(m)*surface_radius(m)^2*1e6)
+                # Eyeballed from Figure 4 of Kemper et al. (2023)
+                @test 0.3297 <= I_MR2 <= 0.331
+            end
+        end
+
         @testset "STW105" begin
             @test surface_radius(STW105) == 6371.0
             @test isanisotropic(STW105)

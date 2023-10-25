@@ -1,3 +1,9 @@
+# SeisModels v1.6.0 release notes
+
+## New features
+- Added the SC-REM models (Kemper et al., 2023), giving the confidence
+  bounds.
+
 # SeisModels v1.5.0 release notes
 
 ## New features
