@@ -20,6 +20,7 @@ Qkappa
 ## Model enquiry
 ```@docs
 depth
+discontinuities
 hasattenuation
 hasdensity
 hasreffrequency
@@ -27,7 +28,6 @@ isanisotropic
 radius
 reffrequency
 surface_radius
-discontinuities
 ```
 
 ## Derived model properties
