@@ -31,6 +31,7 @@ for (f,l) in zip((vp, vs, SeisModels.density), ("Vp", "Vs", "Density"))
 end
 vline!(p, MOON_WEBER_2011.r, label="Layer tops", l=(0.5, :dash))
 savefig(p, "SteppedLayeredModel_example.svg")
+nothing
 ```
 ![Example of a SteppedLayeredModel](SteppedLayeredModel_example.svg)
 
@@ -38,13 +39,13 @@ savefig(p, "SteppedLayeredModel_example.svg")
 SteppedLayeredModel
 ```
 
-See the [constructor](../function_index/#SeisModels.SteppedLayeredModel-Tuple{}) for details on creating
+See the [constructor](@ref SeisModels.SteppedLayeredModel()) for details on creating
 `SteppedLayeredModel`s.
 
 ### `LinearLayeredModel`
 
 A `LinearLayeredModel` is described by radial nodes, between which
-the properties vary linearly.  Discontinutities are added by setting
+the properties vary linearly.  Discontinuities are added by setting
 two subsequent nodes to have the same radii but different properties.
 
 For example, a two-layer model for a planetesimal with radius 1 km
@@ -79,7 +80,7 @@ the discontinuities in a `LinearLayeredModel`.
 LinearLayeredModel
 ```
 
-See the [constructor](../function_index/#SeisModels.LinearLayeredModel-Tuple{}) for details on creating
+See the [constructor](@ref SeisModels.LinearLayeredModel()) for details on creating
 `LinearLayeredModel`s.
 
 ### `PREMPolyModel`
@@ -130,7 +131,7 @@ savefig("PREMPolyModel_example.svg")
 PREMPolyModel
 ```
 
-See the [constructor](../function_index/#SeisModels.PREMPolyModel-Tuple{}) for details on creating
+See the [constructor](@ref SeisModels.PREMPolyModel()) for details on creating
 `PREMPolyModel`s.
 
 #### Attenuation
