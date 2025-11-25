@@ -24,6 +24,7 @@ for (f,l) in zip((vp, vs, SeisModels.density), ("Vp", "Vs", "Density"))
     plot!(p, r->f(PREM, r), 0, 6371, label=l)
 end
 savefig(p, "PREM_example.svg")
+nothing
 ```
 ![Plot of properties of the PREM model](PREM_example.svg)
 
